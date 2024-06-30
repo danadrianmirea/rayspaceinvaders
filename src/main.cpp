@@ -3,20 +3,20 @@
 
 int main()
 {
-    Color darkGreen = Color{20, 160, 133, 255};
+    Color grey = Color { 29, 29, 27, 255 };
 
-    const int screenWidth = 800;
-    const int screenHeight = 600;
-
-    Spaceship spaceship;
+    const int screenWidth = 750;
+    const int screenHeight = 700;
 
     InitWindow(screenWidth, screenHeight, "Space invaders");
-    SetTargetFPS(60);
+    SetTargetFPS(144);
+
+    Spaceship spaceship;
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
-        ClearBackground(darkGreen);
+        ClearBackground(grey);
         spaceship.Update();
         spaceship.Draw();
         EndDrawing();

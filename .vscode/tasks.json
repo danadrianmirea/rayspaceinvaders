@@ -15,21 +15,21 @@
                 "command": "C:/raylib/w64devkit/bin/mingw32-make.exe",
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
-                    "PROJECT_NAME=${fileBasenameNoExtension}",
+                    "PROJECT_NAME=spaceinvaders",
                     "OBJS=src/*.cpp",
                     "BUILD_MODE=DEBUG"
                 ]
             },
             "osx": {
                 "args": [
-                    "PROJECT_NAME=${fileBasenameNoExtension}",
+                    "PROJECT_NAME=spaceinvaders",
                     "OBJS=src/*.cpp",
                     "BUILD_MODE=DEBUG"
                 ]
             },
             "linux": {
                 "args": [
-                    "PROJECT_NAME=${fileBasenameNoExtension}",
+                    "PROJECT_NAME=spaceinvaders",
                     "DESTDIR=/home/linuxbrew/.linuxbrew",
                     "RAYLIB_LIBTYPE=SHARED",
                     "EXAMPLE_RUNTIME_PATH=/home/linuxbrew/.linuxbrew/lib",
@@ -56,19 +56,19 @@
                 "command": "C:/raylib/w64devkit/bin/mingw32-make.exe",
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
-                    "PROJECT_NAME=${fileBasenameNoExtension}",
+                    "PROJECT_NAME=spaceinvaders",
                     "OBJS=src/*.cpp"
                 ]
             },
             "osx": {
                 "args": [
-                    "PROJECT_NAME=${fileBasenameNoExtension}",
+                    "PROJECT_NAME=spaceinvaders",
                     "OBJS=src/*.cpp"
                 ]
             },
             "linux": {
                 "args": [
-                    "PROJECT_NAME=${fileBasenameNoExtension}",
+                    "PROJECT_NAME=spaceinvaders",
                     "DESTDIR=/home/linuxbrew/.linuxbrew",
                     "RAYLIB_LIBTYPE=SHARED",
                     "EXAMPLE_RUNTIME_PATH=/home/linuxbrew/.linuxbrew/lib",

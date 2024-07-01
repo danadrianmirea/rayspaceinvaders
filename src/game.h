@@ -16,19 +16,29 @@ class Game
 
         void Draw();
         void Update();
+        void DeleteInactiveAlienLasers();
         void HandleInput();
+        void AlienShootLaser();
         
     private:
         Spaceship spaceship;
         void CreateObstacles();
         void CreateAliens();
+        void MoveAliens();
+        void MoveDownAliens(int distance);
         std::vector<Obstacle> obstacles;
         std::vector<Alien> aliens;
+        std::vector<Laser> alienLasers;
 
+        int aliensDirection;
         const int numAlienRows = 5;
         const int numAlienColumns = 11;
         const int alienCellSize = 55;
         const int alienOffsetX = 75;
         const int alienOffsetY = 100;
+
+        bool aliensReadyToFire;
+        float alienFireTimer;
+        const float alienFireRate = 0.350f;
 
 };

@@ -1,2 +1,1 @@
-"# raylib_vscode_template" 
-"# rayspaceinvaders" 
+Space invaders game, made using Raylib

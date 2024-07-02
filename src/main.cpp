@@ -5,61 +5,73 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
+
+bool exitWindowRequested = false; // Flag to request window to exit
+bool exitWindow = false;          // Flag to set window to exit
+
+void UpdateWindow(Game& game, float scale)
+{
+    if (WindowShouldClose() || IsKeyPressed(KEY_ESCAPE))
+    {
+        exitWindowRequested = true;
+        game.paused = true;
+    }
+
+    if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
+    {
+        // ToggleBorderlessWindowed();
+        ToggleFullscreen();
+    }
+
+    if (exitWindowRequested)
+    {
+        if (IsKeyPressed(KEY_Y))
+        {
+            exitWindow = true;
+        }
+        else if (IsKeyPressed(KEY_N))
+        {
+            exitWindowRequested = false;
+            game.paused = false;
+        }
+    }
+
+    if (IsWindowFocused() == false)
+    {
+        game.paused = true;
+    }
+}
+
 int main()
 {
     Color grey = Color{29, 29, 27, 255};
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
+
     InitWindow(gameScreenWidth, gameScreenHeight, "Space invaders");
     SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
 
-    bool exitWindowRequested = false; // Flag to request window to exit
-    bool exitWindow = false;          // Flag to set window to exit
+    // int display = GetCurrentMonitor();
+    //  int windowWidth = (int)(GetMonitorWidth(display));
+    //  int windowHeight = (int)(GetMonitorHeight(display));
+    //  SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
 
-    int display = GetCurrentMonitor();
-
-    float resScale = 0.8f;
-
-    int windowWidth = (int)(GetMonitorWidth(display) * resScale);
-    int windowHeight = (int)(GetMonitorHeight(display) * resScale);
+    int windowWidth = 1920;
+    int windowHeight = 1080;
     SetWindowSize(windowWidth, windowHeight);
+    ToggleFullscreen();
     // ToggleBorderlessWindowed();
 
     RenderTexture2D target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR); // Texture scale filter to use
-
     SetTargetFPS(144);
+
+    float scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 
     Game game;
 
-    // bool IsWindowFocused(void); // Check if window is currently focused (only PLATFORM_DESKTOP)
-
     while (!exitWindow)
     {
-        float scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
-
-        if (WindowShouldClose() || IsKeyPressed(KEY_ESCAPE))
-        {
-            exitWindowRequested = true;
-            game.paused = true;
-        }
-
-        if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
-        {
-            ToggleBorderlessWindowed();
-        }
-
-        if (exitWindowRequested)
-        {
-            if (IsKeyPressed(KEY_Y))
-            {
-                exitWindow = true;
-            }
-            else if (IsKeyPressed(KEY_N))
-            {
-                exitWindowRequested = false;
-                game.paused = false;
-            }
-        }
+        scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
+        UpdateWindow(game, scale);
 
         game.HandleInput();
         game.Update();
@@ -80,7 +92,7 @@ int main()
 
         if (exitWindowRequested)
         {
-            DrawRectangle(GetScreenWidth() / 2 - 500,  GetScreenHeight()/ 2 - 40, 1000, 120, BLACK);
+            DrawRectangle(GetScreenWidth() / 2 - 500, GetScreenHeight() / 2 - 40, 1000, 120, BLACK);
             DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, WHITE);
         }
         EndDrawing();

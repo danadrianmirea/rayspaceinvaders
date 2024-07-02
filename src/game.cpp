@@ -40,6 +40,7 @@ void Game::InitGame()
     gameOver = false;
     timeLastMysteryShipSpawn = 0.0f;
     mysteryShipSpawnInterval = GetRandomValue(10, 20);
+    isFirstFrameAfterReset = true;
 }
 
 void Game::Reset()
@@ -113,6 +114,11 @@ void Game::DeleteInactiveAlienLasers()
 
 void Game::HandleInput()
 {
+    if(isFirstFrameAfterReset)
+    {
+        isFirstFrameAfterReset = false;
+        return;
+    }
 
     if (IsKeyDown(KEY_LEFT))
     {

@@ -53,7 +53,7 @@ void UpdateWindow(Game &game, float scale)
         ToggleBorderlessWindowed();
     }
 
-    if (game.gameOver && IsKeyPressed(KEY_ENTER))
+    if (game.gameOver && IsKeyPressed(KEY_SPACE))
     {
         game.Reset();
     }
@@ -186,7 +186,7 @@ int main()
         else if (game.gameOver)
         {
             DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
-            DrawText("Game over, press ENTER to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+            DrawText("Game over, press SPACE to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
         }
 
         EndDrawing();

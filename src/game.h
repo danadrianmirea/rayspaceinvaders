@@ -62,6 +62,7 @@ private:
     float alienFireTimer;
     const float alienFireRate = 0.350f;
     bool alienUpdateTimerExpired;
+    bool isFirstFrameAfterReset;
     float alienUpdateTimer;
     const float alienUpdateRate = 0.01f;
 

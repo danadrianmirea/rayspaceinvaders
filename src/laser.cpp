@@ -1,3 +1,5 @@
+
+#include "globals.h"
 #include "laser.h"
 
 Laser::Laser(Vector2 pos, int spd)
@@ -13,7 +15,7 @@ void Laser::Update()
 
     if(active)
     {
-        if(position.y > GetScreenHeight() || position.y < 0)
+        if(position.y > gameScreenHeight || position.y < 0)
         {
             active = false;
         }
@@ -28,7 +30,7 @@ void Laser::Draw()
     }
 }
 
-bool Laser::IsActive()
+Rectangle Laser::getRect()
 {
-    return active;
+    return {position.x, position.y, 4.0f, 4.0f};
 }

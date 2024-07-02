@@ -1,3 +1,5 @@
+
+#include "globals.h"
 #include "spaceship.h"
 #include <algorithm>
 #include <iostream>
@@ -5,8 +7,8 @@
 Spaceship::Spaceship()
 {
     image = LoadTexture("Graphics/spaceship.png");
-    position.x = (GetScreenWidth() - image.width) / 2;
-    position.y = GetScreenHeight() - image.height;
+    position.x = (gameScreenWidth - image.width) / 2;
+    position.y = gameScreenHeight - image.height;
     shipSpeed = 7;
     laserSpeed = 6;
     laserFireTimer = 0;
@@ -22,7 +24,7 @@ void Spaceship::Update()
 {
     for (auto &l : lasers)
     {
-        if (l.IsActive())
+        if (l.active)
         {
             l.Update();
         }
@@ -54,9 +56,9 @@ void Spaceship::MoveLeft()
 void Spaceship::MoveRight()
 {
     position.x += shipSpeed;
-    if (position.x > GetScreenWidth() - image.width)
+    if (position.x > gameScreenWidth - image.width)
     {
-        position.x = GetScreenWidth() - image.width;
+        position.x = gameScreenWidth - image.width;
     }
 }
 
@@ -69,10 +71,15 @@ void Spaceship::FireLaser()
     }
 }
 
+Rectangle Spaceship::getRect()
+{
+    return {position.x, position.y, (float)image.width, (float)image.height};
+}
+
 void Spaceship::DeleteInactiveLasers()
 {
     auto it = std::remove_if(lasers.begin(), lasers.end(), [](Laser &l)
-                             { return l.IsActive() == false; });
+                             { return l.active == false; });
     lasers.erase(it, lasers.end());
     // std::cout << "lasers size : " << lasers.size() << "\n";
 }

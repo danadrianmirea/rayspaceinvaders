@@ -5,22 +5,39 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-
 bool exitWindowRequested = false; // Flag to request window to exit
 bool exitWindow = false;          // Flag to set window to exit
+bool fullscreen = true;
+const int borderH = 100;
+const int borderW = (int)(1920.0f / 1080.f * borderH);
+
+int windowWidth = 1920;
+int windowHeight = 1080;
 
 void UpdateWindow(Game& game, float scale)
 {
-    if (WindowShouldClose() || IsKeyPressed(KEY_ESCAPE))
+    if (WindowShouldClose() || (IsKeyPressed(KEY_ESCAPE) && exitWindowRequested == false))
     {
         exitWindowRequested = true;
-        game.paused = true;
+        game.isInExitMenu = true;
+        return;
     }
 
     if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
     {
-        // ToggleBorderlessWindowed();
-        ToggleFullscreen();
+        if(fullscreen)
+        {
+            fullscreen = false;
+            SetWindowSize(windowWidth - borderW , windowHeight - borderH );
+        }
+        else 
+        {
+            fullscreen = true;
+            SetWindowSize(windowWidth, windowHeight);
+        }
+        //ToggleFullscreen();
+        ToggleBorderlessWindowed();
+        
     }
 
     if (exitWindowRequested)
@@ -29,16 +46,32 @@ void UpdateWindow(Game& game, float scale)
         {
             exitWindow = true;
         }
-        else if (IsKeyPressed(KEY_N))
+        else if (IsKeyPressed(KEY_N) || IsKeyPressed(KEY_ESCAPE))
         {
             exitWindowRequested = false;
-            game.paused = false;
+            game.isInExitMenu = false;
         }
     }
 
     if (IsWindowFocused() == false)
     {
-        game.paused = true;
+        game.lostWindowFocus = true;
+    }
+    else 
+    {
+        game.lostWindowFocus = false;
+    }
+
+    if(exitWindowRequested == false && game.lostWindowFocus == false && IsKeyPressed(KEY_P))
+    {
+        if(game.paused)
+        {
+            game.paused = false;
+        }
+        else 
+        {
+            game.paused = true;
+        }
     }
 }
 
@@ -49,16 +82,18 @@ int main()
     InitWindow(gameScreenWidth, gameScreenHeight, "Space invaders");
     SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
 
-    // int display = GetCurrentMonitor();
+    //  int display = GetCurrentMonitor();
     //  int windowWidth = (int)(GetMonitorWidth(display));
     //  int windowHeight = (int)(GetMonitorHeight(display));
     //  SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
 
-    int windowWidth = 1920;
-    int windowHeight = 1080;
-    SetWindowSize(windowWidth, windowHeight);
-    ToggleFullscreen();
-    // ToggleBorderlessWindowed();
+
+    
+    SetWindowSize(windowWidth - borderW, windowHeight - borderH);
+    //MaximizeWindow();
+    SetWindowPosition(50, 50);
+    //ToggleFullscreen();
+    //ToggleBorderlessWindowed();
 
     RenderTexture2D target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR); // Texture scale filter to use
@@ -95,6 +130,17 @@ int main()
             DrawRectangle(GetScreenWidth() / 2 - 500, GetScreenHeight() / 2 - 40, 1000, 120, BLACK);
             DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, WHITE);
         }
+        else if (game.paused)
+        {
+            DrawRectangle(GetScreenWidth() / 2 - 500, GetScreenHeight() / 2 - 40, 1000, 120, BLACK);
+            DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, WHITE);
+        }
+        else if (game.lostWindowFocus)
+        {
+            DrawRectangle(GetScreenWidth() / 2 - 500, GetScreenHeight() / 2 - 40, 1000, 120, BLACK);
+            DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, WHITE);
+        }
+
         EndDrawing();
     }
 

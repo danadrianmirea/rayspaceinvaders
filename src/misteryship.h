@@ -2,11 +2,11 @@
 
 #include "raylib.h"
 
-class MisteryShip
+class MysteryShip
 {
 public:
-    MisteryShip();
-    ~MisteryShip();
+    MysteryShip();
+    ~MysteryShip();
     void Update();
     void Draw();
     void Spawn();

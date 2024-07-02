@@ -1,18 +1,18 @@
 #include "globals.h"
 #include "misteryship.h"
 
-MisteryShip::MisteryShip()
+MysteryShip::MysteryShip()
 {
     image = LoadTexture("Graphics/mystery.png");
     alive = false;
 }
 
-MisteryShip::~MisteryShip()
+MysteryShip::~MysteryShip()
 {
     UnloadTexture(image);
 }
 
-void MisteryShip::Spawn()
+void MysteryShip::Spawn()
 {
     position.y = 90;
     int side = GetRandomValue(0, 1);
@@ -30,7 +30,7 @@ void MisteryShip::Spawn()
     alive = true;
 }
 
-Rectangle MisteryShip::getRect()
+Rectangle MysteryShip::getRect()
 {
     if(alive)
     {
@@ -42,7 +42,7 @@ Rectangle MisteryShip::getRect()
     }
 }
 
-void MisteryShip::Update()
+void MysteryShip::Update()
 {
     
     if(alive)
@@ -55,7 +55,7 @@ void MisteryShip::Update()
     }
 }
 
-void MisteryShip::Draw()
+void MysteryShip::Draw()
 {
     if(alive)
     {

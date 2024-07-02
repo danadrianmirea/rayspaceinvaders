@@ -23,7 +23,9 @@ public:
     void AlienShootLaser();
     void CheckForCollisions();
 
+    bool isInExitMenu;
     bool paused;
+    bool lostWindowFocus;
 
 private:
     Spaceship spaceship;
@@ -46,6 +48,9 @@ private:
     bool aliensReadyToFire;
     float alienFireTimer;
     const float alienFireRate = 0.350f;
+    bool alienUpdateTimerExpired;
+    float alienUpdateTimer;
+    const float alienUpdateRate = 0.01f;
 
-    MisteryShip misteryShip;
+    MysteryShip mysteryShip;
 };

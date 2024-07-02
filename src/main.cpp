@@ -40,6 +40,11 @@ void UpdateWindow(Game& game, float scale)
         
     }
 
+    if(game.gameOver && IsKeyPressed(KEY_ENTER))
+    {
+        game.Reset();
+    }
+
     if (exitWindowRequested)
     {
         if (IsKeyPressed(KEY_Y))
@@ -62,7 +67,7 @@ void UpdateWindow(Game& game, float scale)
         game.lostWindowFocus = false;
     }
 
-    if(exitWindowRequested == false && game.lostWindowFocus == false && IsKeyPressed(KEY_P))
+    if(exitWindowRequested == false && game.lostWindowFocus == false && game.gameOver == false && IsKeyPressed(KEY_P))
     {
         if(game.paused)
         {
@@ -108,7 +113,7 @@ int main()
         scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
         UpdateWindow(game, scale);
 
-        game.HandleInput();
+        
         game.Update();
 
         BeginTextureMode(target);
@@ -139,6 +144,11 @@ int main()
         {
             DrawRectangle(GetScreenWidth() / 2 - 500, GetScreenHeight() / 2 - 40, 1000, 120, BLACK);
             DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, WHITE);
+        }
+        else if(game.gameOver)
+        {
+            DrawRectangle(GetScreenWidth() / 2 - 500, GetScreenHeight() / 2 - 40, 1000, 120, BLACK);
+            DrawText("Game over, press ENTER to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, WHITE);
         }
 
         EndDrawing();

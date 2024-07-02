@@ -11,6 +11,7 @@ class Game
 public:
     Game();
     ~Game();
+    void Reset();
     Game(const Game &) = delete;
     const Game &operator=(const Game &g) = delete;
     Game(Game &&) = delete;
@@ -22,16 +23,19 @@ public:
     void HandleInput();
     void AlienShootLaser();
     void CheckForCollisions();
+    void GameOver();
 
     bool isInExitMenu;
     bool paused;
     bool lostWindowFocus;
+    bool gameOver;
+    int lives;
 
 private:
     Spaceship spaceship;
     void CreateObstacles();
     void CreateAliens();
-    void MoveAliens();
+    void MoveAliens(int speed);
     void MoveDownAliens(int distance);
     std::vector<Obstacle> obstacles;
     std::vector<Alien> aliens;
@@ -45,6 +49,7 @@ private:
     const int alienOffsetY = 100;
 
     float alienLaserSpeed;
+    float alienShipSpeed;
     bool aliensReadyToFire;
     float alienFireTimer;
     const float alienFireRate = 0.350f;

@@ -9,6 +9,7 @@ Game::Game()
     CreateAliens();
     aliensDirection = 1;
     alienLaserSpeed = -3;
+    alienShipSpeed = 1;
     aliensReadyToFire = false;
     alienFireTimer = 0.0f;
     paused = false;
@@ -16,11 +17,35 @@ Game::Game()
     isInExitMenu = false;
     alienUpdateTimer = 0.0f;
     alienUpdateTimerExpired = false;
+    lives = 3;
+    gameOver = false;
 }
 
 Game::~Game()
 {
     Alien::UnloadImages();
+}
+
+void Game::Reset()
+{
+    obstacles.clear();
+    aliens.clear();
+    alienLasers.clear();
+
+    CreateObstacles();
+    CreateAliens();
+    aliensDirection = 1;
+    alienLaserSpeed = -3;
+    alienShipSpeed = 1;
+    aliensReadyToFire = false;
+    alienFireTimer = 0.0f;
+    paused = false;
+    lostWindowFocus = false;
+    isInExitMenu = false;
+    alienUpdateTimer = 0.0f;
+    alienUpdateTimerExpired = false;
+    lives = 3;
+    gameOver = false;
 }
 
 void Game::Draw()
@@ -46,12 +71,15 @@ void Game::Draw()
 
 void Game::Update()
 {
-    if (paused == false && lostWindowFocus == false && isInExitMenu == false)
+    bool running = (paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false);
+    if (running)
     {
+        HandleInput();
+
         spaceship.Update();
         mysteryShip.Update();
 
-        MoveAliens();
+        MoveAliens(alienShipSpeed);
         AlienShootLaser();
 
         for (auto &alienLaser : alienLasers)
@@ -74,6 +102,7 @@ void Game::DeleteInactiveAlienLasers()
 
 void Game::HandleInput()
 {
+
     if (IsKeyDown(KEY_LEFT))
     {
         spaceship.MoveLeft();
@@ -185,7 +214,13 @@ void Game::CheckForCollisions()
         if (CheckCollisionRecs(laser.getRect(), spaceship.getRect()))
         {
             laser.active = false;
-            std::cout << "Player hit\n";
+
+            lives--;
+            if (lives == 0)
+            {
+                GameOver();
+            }
+
             break;
         }
         if (laser.active == false)
@@ -242,9 +277,14 @@ void Game::CheckForCollisions()
 
         if (CheckCollisionRecs(alien.getRect(), spaceship.getRect()))
         {
-            std::cout << "Spaceship hit by alien\n";
+            GameOver();
         }
     }
+}
+
+void Game::GameOver()
+{
+    gameOver = true;
 }
 
 void Game::CreateObstacles()
@@ -286,7 +326,7 @@ void Game::CreateAliens()
     }
 }
 
-void Game::MoveAliens()
+void Game::MoveAliens(int speed)
 {
     if (alienUpdateTimerExpired)
     {
@@ -295,14 +335,14 @@ void Game::MoveAliens()
             if (alien.position.x + alien.alienImages[alien.type - 1].width > gameScreenWidth - 1)
             {
                 aliensDirection = -1;
-                MoveDownAliens(2);
+                MoveDownAliens(4);
             }
             if (alien.position.x < 0)
             {
                 aliensDirection = 1;
-                // MoveDownAliens(2);
+                MoveDownAliens(4);
             }
-            alien.Update(aliensDirection);
+            alien.Update(speed, aliensDirection);
         }
         alienUpdateTimerExpired = false;
     }

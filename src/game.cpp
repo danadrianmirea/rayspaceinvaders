@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <fstream>
 
-#include <iostream>>
+#include <iostream>
 
 Game::Game()
 {

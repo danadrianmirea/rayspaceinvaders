@@ -95,10 +95,9 @@ void UpdateWindow(Game &game, float scale)
 
 int main()
 {
-
     InitWindow(gameScreenWidth, gameScreenHeight, "Space invaders");
     InitAudioDevice();
-    SetMasterVolume(0.33f);
+    SetMasterVolume(0.22f);
     SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
 
     Font font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);

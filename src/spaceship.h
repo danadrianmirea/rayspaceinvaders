@@ -9,6 +9,7 @@ class Spaceship
 public:
     Spaceship();
     ~Spaceship();
+    void Reset();
     void Update();
     void Draw();
     void MoveLeft();
@@ -17,7 +18,7 @@ public:
     Rectangle getRect();
 
     std::vector<Laser> lasers;
-
+    
 private:
     void DeleteInactiveLasers();
     void ReloadWeapon();
@@ -28,4 +29,9 @@ private:
     bool readyToFire;
     float laserFireTimer;
     const float laserFireInterval = 0.350f;
+
+    const int cShipSpeed = 4;
+    const int cLaserSpeed = 4;
+
+    Sound laserSound;
 };

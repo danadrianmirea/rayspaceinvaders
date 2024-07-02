@@ -1,4 +1,6 @@
 #include "globals.h"
 
-const int gameScreenWidth = 750;
-const int gameScreenHeight = 700;
+int gameScreenWidth = 750;
+int gameScreenHeight = 700;
+int frameOffsetLeft = 25;
+int frameOffsetRight = 25;

@@ -7,17 +7,25 @@
 Spaceship::Spaceship()
 {
     image = LoadTexture("Graphics/spaceship.png");
-    position.x = (gameScreenWidth - image.width) / 2;
-    position.y = gameScreenHeight - image.height;
-    shipSpeed = 7;
-    laserSpeed = 6;
-    laserFireTimer = 0;
-    readyToFire = false;
+    laserSound = LoadSound("Sounds/laser.ogg");
+    Reset();
 }
 
 Spaceship::~Spaceship()
 {
     UnloadTexture(image);
+    UnloadSound(laserSound);
+}
+
+void Spaceship::Reset()
+{
+    position.x = (gameScreenWidth - image.width) / 2;
+    position.y = gameScreenHeight - image.height - 100;
+    lasers.clear();
+    shipSpeed = cShipSpeed;
+    laserSpeed = cLaserSpeed;
+    laserFireTimer = 0;
+    readyToFire = false;
 }
 
 void Spaceship::Update()
@@ -47,18 +55,18 @@ void Spaceship::Draw()
 void Spaceship::MoveLeft()
 {
     position.x -= shipSpeed;
-    if (position.x < 0)
+    if (position.x < frameOffsetLeft)
     {
-        position.x = 0;
+        position.x = frameOffsetLeft;
     }
 }
 
 void Spaceship::MoveRight()
 {
     position.x += shipSpeed;
-    if (position.x > gameScreenWidth - image.width)
+    if (position.x > gameScreenWidth - image.width - frameOffsetRight)
     {
-        position.x = gameScreenWidth - image.width;
+        position.x = gameScreenWidth - image.width - frameOffsetRight;
     }
 }
 
@@ -67,6 +75,7 @@ void Spaceship::FireLaser()
     if (readyToFire)
     {
         lasers.push_back(Laser({position.x + image.width / 2 - Laser::laserWidth / 2, position.y}, laserSpeed));
+        PlaySound(laserSound);
         readyToFire = false;
     }
 }

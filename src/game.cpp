@@ -1,9 +1,26 @@
 #include "game.h"
 #include <algorithm>
+#include <fstream>
 
 #include <iostream>>
 
 Game::Game()
+{
+    music = LoadMusicStream("Sounds/music.ogg");
+    explosionSound = LoadSound("Sounds/explosion.ogg");
+    PlayMusicStream(music);
+    InitGame();
+    
+}
+
+Game::~Game()
+{
+    Alien::UnloadImages();
+    UnloadMusicStream(music);
+    UnloadSound(explosionSound);
+}
+
+void Game::InitGame()
 {
     CreateObstacles();
     CreateAliens();
@@ -18,12 +35,11 @@ Game::Game()
     alienUpdateTimer = 0.0f;
     alienUpdateTimerExpired = false;
     lives = 3;
+    score = 0;
+    highScore = LoadHighScoreFromFile();
     gameOver = false;
-}
-
-Game::~Game()
-{
-    Alien::UnloadImages();
+    timeLastMysteryShipSpawn = 0.0f;
+    mysteryShipSpawnInterval = GetRandomValue(10, 20);
 }
 
 void Game::Reset()
@@ -31,21 +47,8 @@ void Game::Reset()
     obstacles.clear();
     aliens.clear();
     alienLasers.clear();
-
-    CreateObstacles();
-    CreateAliens();
-    aliensDirection = 1;
-    alienLaserSpeed = -3;
-    alienShipSpeed = 1;
-    aliensReadyToFire = false;
-    alienFireTimer = 0.0f;
-    paused = false;
-    lostWindowFocus = false;
-    isInExitMenu = false;
-    alienUpdateTimer = 0.0f;
-    alienUpdateTimerExpired = false;
-    lives = 3;
-    gameOver = false;
+    spaceship.Reset();
+    InitGame();
 }
 
 void Game::Draw()
@@ -74,6 +77,14 @@ void Game::Update()
     bool running = (paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false);
     if (running)
     {
+        double currentTime = GetTime();
+        {
+            if (currentTime - timeLastMysteryShipSpawn > mysteryShipSpawnInterval)
+            {
+                mysteryShip.Spawn();
+                timeLastMysteryShipSpawn = GetTime();
+            }
+        }
         HandleInput();
 
         spaceship.Update();
@@ -156,6 +167,23 @@ void Game::CheckForCollisions()
         {
             if (CheckCollisionRecs(it->getRect(), laser.getRect()))
             {
+                PlaySound(explosionSound);
+
+                if (it->type == 1)
+                {
+                    score += 100;
+                }
+                else if (it->type == 2)
+                {
+                    score += 200;
+                }
+                else if (it->type == 3)
+                {
+                    score += 300;
+                }
+
+                CheckForHighScore();
+
                 it = aliens.erase(it);
                 laser.active = false;
                 break;
@@ -198,8 +226,11 @@ void Game::CheckForCollisions()
 
         if (CheckCollisionRecs(mysteryShip.getRect(), laser.getRect()))
         {
+            PlaySound(explosionSound);
             mysteryShip.alive = false;
             laser.active = false;
+            score += 500;
+            CheckForHighScore();
         }
     }
 
@@ -214,8 +245,8 @@ void Game::CheckForCollisions()
         if (CheckCollisionRecs(laser.getRect(), spaceship.getRect()))
         {
             laser.active = false;
-
             lives--;
+            PlaySound(explosionSound);
             if (lives == 0)
             {
                 GameOver();
@@ -287,6 +318,45 @@ void Game::GameOver()
     gameOver = true;
 }
 
+void Game::CheckForHighScore()
+{
+    if (score > highScore)
+    {
+        highScore = score;
+        SaveHighScoreToFile();
+    }
+}
+
+void Game::SaveHighScoreToFile()
+{
+    std::ofstream highScoreFile("highscore.txt");
+    if (highScoreFile.is_open())
+    {
+        highScoreFile << highScore;
+        highScoreFile.close();
+    }
+    else
+    {
+        std::cerr << "Failed to save highscore to file \n";
+    }
+}
+
+int Game::LoadHighScoreFromFile()
+{
+    int loadedHighScore = 0;
+    std::ifstream highscoreFile("highscore.txt");
+    if (highscoreFile.is_open())
+    {
+        highscoreFile >> loadedHighScore;
+        highscoreFile.close();
+    }
+    else
+    {
+        std::cerr << "Failed to load highscore from file\n";
+    }
+    return loadedHighScore;
+}
+
 void Game::CreateObstacles()
 {
     int obstacleWidth = Obstacle::grid[0].size() * Block::blockWidth;
@@ -295,7 +365,7 @@ void Game::CreateObstacles()
     for (int i = 0; i < 4; i++)
     {
         float offsetX = (i + 1) * gap + i * obstacleWidth;
-        obstacles.push_back(Obstacle({offsetX, float(gameScreenHeight - 100)}));
+        obstacles.push_back(Obstacle({offsetX, float(gameScreenHeight - 200)}));
     }
 }
 
@@ -332,12 +402,12 @@ void Game::MoveAliens(int speed)
     {
         for (auto &alien : aliens)
         {
-            if (alien.position.x + alien.alienImages[alien.type - 1].width > gameScreenWidth - 1)
+            if (alien.position.x + alien.alienImages[alien.type - 1].width > gameScreenWidth - frameOffsetRight)
             {
                 aliensDirection = -1;
                 MoveDownAliens(4);
             }
-            if (alien.position.x < 0)
+            if (alien.position.x < frameOffsetLeft)
             {
                 aliensDirection = 1;
                 MoveDownAliens(4);

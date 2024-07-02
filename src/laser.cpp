@@ -15,7 +15,7 @@ void Laser::Update()
 
     if(active)
     {
-        if(position.y > gameScreenHeight || position.y < 0)
+        if(position.y > gameScreenHeight - 100 || position.y < frameOffsetLeft)
         {
             active = false;
         }

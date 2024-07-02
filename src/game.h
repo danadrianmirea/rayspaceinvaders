@@ -11,6 +11,7 @@ class Game
 public:
     Game();
     ~Game();
+    void InitGame();
     void Reset();
     Game(const Game &) = delete;
     const Game &operator=(const Game &g) = delete;
@@ -24,13 +25,20 @@ public:
     void AlienShootLaser();
     void CheckForCollisions();
     void GameOver();
+    void CheckForHighScore();
+    void SaveHighScoreToFile();
+    int LoadHighScoreFromFile();
 
     bool isInExitMenu;
     bool paused;
     bool lostWindowFocus;
     bool gameOver;
     int lives;
-
+    int score;
+    int highScore;
+    Music music;
+    Sound explosionSound;
+    
 private:
     Spaceship spaceship;
     void CreateObstacles();
@@ -58,4 +66,6 @@ private:
     const float alienUpdateRate = 0.01f;
 
     MysteryShip mysteryShip;
+    float mysteryShipSpawnInterval;
+    float timeLastMysteryShipSpawn;
 };

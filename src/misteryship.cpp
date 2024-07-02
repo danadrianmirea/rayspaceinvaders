@@ -19,13 +19,13 @@ void MysteryShip::Spawn()
 
     if(side == 0)
     {
-        position.x = 0;
-        speed = 3;
+        position.x = frameOffsetLeft;
+        speed = 1;
     }
     else 
     {
-        position.x = gameScreenWidth - image.width;
-        speed = -3;
+        position.x = gameScreenWidth - image.width - frameOffsetRight;
+        speed = -1;
     }
     alive = true;
 }
@@ -48,7 +48,7 @@ void MysteryShip::Update()
     if(alive)
     {
         position.x += speed;
-        if(position.x > gameScreenWidth - image.width || position.x < 0)
+        if(position.x > gameScreenWidth - image.width - frameOffsetRight || position.x < frameOffsetLeft)
         {
             alive = false;
         }
@@ -60,6 +60,5 @@ void MysteryShip::Draw()
     if(alive)
     {
         DrawTextureV(image, position, WHITE);
-        DrawRectangle(position.x, position.y, 50, 50, WHITE);
     }
 }

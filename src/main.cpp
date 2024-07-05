@@ -53,7 +53,11 @@ void UpdateWindow(Game &game, float scale)
         ToggleBorderlessWindowed();
     }
 
-    if (game.gameOver && IsKeyPressed(KEY_SPACE))
+    if (game.firstTimeGameStart && IsKeyPressed(KEY_SPACE))
+    {
+        game.firstTimeGameStart = false;
+    }
+    else if (game.gameOver && IsKeyPressed(KEY_SPACE))
     {
         game.Reset();
     }
@@ -122,11 +126,12 @@ int main()
     float scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 
     Game game;
+    Texture2D spaceshipImage = LoadTexture("Graphics/spaceship.png");
 
     while (!exitWindow)
     {
-        UpdateMusicStream(game.music);
-        
+        // UpdateMusicStream(game.music);
+
         scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
         UpdateWindow(game, scale);
 
@@ -147,8 +152,6 @@ int main()
         DrawTextEx(font, "HIGH-SCORE", {570, 15}, 34, 2, yellow);
         std::string highScoreText = FormatWithLeadingZeroes(game.highScore, 7);
         DrawTextEx(font, highScoreText.c_str(), {570, 40}, 34, 2, yellow);
-
-        Texture2D spaceshipImage = LoadTexture("Graphics/spaceship.png");
 
         float x = 50.0f;
         for (int i = 0; i < game.lives; i++)
@@ -173,6 +176,12 @@ int main()
             DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
             DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
         }
+        else if (game.firstTimeGameStart)
+        {
+            DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+            DrawText("Press SPACE to play", GetScreenWidth() / 2 - 200, GetScreenHeight() / 2, 40, yellow);
+        }
+
         else if (game.paused)
         {
             DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);

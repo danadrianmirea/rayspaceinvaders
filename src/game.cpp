@@ -8,9 +8,10 @@ Game::Game()
 {
     music = LoadMusicStream("Sounds/music.ogg");
     explosionSound = LoadSound("Sounds/explosion.ogg");
-    PlayMusicStream(music);
+    //PlayMusicStream(music);
     InitGame();
-    
+    firstTimeGameStart = true;
+    level = 1;
 }
 
 Game::~Game()
@@ -75,7 +76,7 @@ void Game::Draw()
 
 void Game::Update()
 {
-    bool running = (paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false);
+    bool running = (firstTimeGameStart == false && paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false);
     if (running)
     {
         double currentTime = GetTime();

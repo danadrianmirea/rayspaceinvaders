@@ -29,15 +29,18 @@ public:
     void SaveHighScoreToFile();
     int LoadHighScoreFromFile();
 
+    bool firstTimeGameStart;
     bool isInExitMenu;
     bool paused;
     bool lostWindowFocus;
     bool gameOver;
     int lives;
+    int level;
     int score;
     int highScore;
     Music music;
     Sound explosionSound;
+    const int maxLevels = 6;
     
 private:
     Spaceship spaceship;

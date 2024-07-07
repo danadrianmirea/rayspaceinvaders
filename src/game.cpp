@@ -1,13 +1,19 @@
+
 #include "game.h"
 #include <algorithm>
 #include <fstream>
 
 #include <iostream>
 
+
+
 Game::Game()
 {
+    InitAudioDevice();
+    SetMasterVolume(0.22f);
     music = LoadMusicStream("Sounds/music.ogg");
     explosionSound = LoadSound("Sounds/explosion.ogg");
+    font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
     //PlayMusicStream(music);
     InitGame();
     firstTimeGameStart = true;
@@ -19,6 +25,7 @@ Game::~Game()
     Alien::UnloadImages();
     UnloadMusicStream(music);
     UnloadSound(explosionSound);
+    UnloadFont(font);
 }
 
 void Game::InitGame()
@@ -72,6 +79,31 @@ void Game::Draw()
     {
         alienLaser.Draw();
     }
+
+    DrawUI();
+}
+
+void Game::DrawUI()
+{
+    DrawRectangleRoundedLines({ 10, 10, 780, 780 }, 0.18f, 20, 2, yellow);
+
+        DrawLineEx({ 25, 730 }, { 775, 730 }, 3, yellow);
+        DrawTextEx(font, "LEVEL 01", { 570, 740 }, 34, 2, yellow);
+
+        DrawTextEx(font, "SCORE", { 50, 15 }, 34, 2, yellow);
+        std::string scoreText = FormatWithLeadingZeroes(score, 7);
+        DrawTextEx(font, scoreText.c_str(), { 50, 40 }, 34, 2, yellow);
+
+        DrawTextEx(font, "HIGH-SCORE", { 570, 15 }, 34, 2, yellow);
+        std::string highScoreText = FormatWithLeadingZeroes(highScore, 7);
+        DrawTextEx(font, highScoreText.c_str(), { 570, 40 }, 34, 2, yellow);
+
+        float x = 50.0f;
+        for (int i = 0; i < lives; i++)
+        {
+            DrawTextureV(spaceship.GetSpaceshipImage(), { x, 745 }, WHITE);
+            x += 50;
+        }
 }
 
 void Game::Update()
@@ -440,4 +472,12 @@ void Game::MoveDownAliens(int distance)
     {
         alien.position.y += distance;
     }
+}
+
+std::string Game::FormatWithLeadingZeroes(int number, int width)
+{
+    std::string numberText = std::to_string(number);
+    int leadingZeros = width - numberText.length();
+    numberText = std::string(leadingZeros, '0') + numberText;
+    return numberText;
 }

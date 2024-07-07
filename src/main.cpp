@@ -1,32 +1,6 @@
 #include <string>
 #include <raylib.h>
-// #include "raymath.h"
 #include "game.h"
-
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-
-bool exitWindowRequested = false; // Flag to request window to exit
-bool exitWindow = false;          // Flag to set window to exit
-bool fullscreen = true;
-const int borderH = 100;
-const int borderW = (int)(1920.0f / 1080.f * borderH);
-
-std::string FormatWithLeadingZeroes(int number, int width)
-{
-    std::string numberText = std::to_string(number);
-    int leadingZeros = width - numberText.length();
-    numberText = std::string(leadingZeros, '0') + numberText;
-    return numberText;
-}
-
-int windowWidth = 1920;
-int windowHeight = 1080;
-
-Color grey = Color{ 29, 29, 27, 255 };
-Color yellow = Color{ 243, 216, 63, 255 };
-
-int offset = 50;
 
 void UpdateWindow(Game& game, float scale)
 {
@@ -100,11 +74,9 @@ void UpdateWindow(Game& game, float scale)
 int main()
 {
     InitWindow(gameScreenWidth, gameScreenHeight, "Space invaders");
-    InitAudioDevice();
-    SetMasterVolume(0.22f);
-    SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
+    
 
-    Font font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
+    SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
 
     //  int display = GetCurrentMonitor();
     //  int windowWidth = (int)(GetMonitorWidth(display));
@@ -130,12 +102,7 @@ int main()
 
     while (!exitWindow)
     {
-<<<<<<< HEAD
         // UpdateMusicStream(game.music);
-=======
-        UpdateMusicStream(game.music);
->>>>>>> 71d94f928c76753ef99eade6dff0e41cbfb0dfd9
-
         scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
         UpdateWindow(game, scale);
 
@@ -144,26 +111,7 @@ int main()
         BeginTextureMode(target);
 
         ClearBackground(grey);
-        DrawRectangleRoundedLines({ 10, 10, 780, 780 }, 0.18f, 20, 2, yellow);
-
-        DrawLineEx({ 25, 730 }, { 775, 730 }, 3, yellow);
-        DrawTextEx(font, "LEVEL 01", { 570, 740 }, 34, 2, yellow);
-
-        DrawTextEx(font, "SCORE", { 50, 15 }, 34, 2, yellow);
-        std::string scoreText = FormatWithLeadingZeroes(game.score, 7);
-        DrawTextEx(font, scoreText.c_str(), { 50, 40 }, 34, 2, yellow);
-
-        DrawTextEx(font, "HIGH-SCORE", { 570, 15 }, 34, 2, yellow);
-        std::string highScoreText = FormatWithLeadingZeroes(game.highScore, 7);
-        DrawTextEx(font, highScoreText.c_str(), { 570, 40 }, 34, 2, yellow);
-
-        float x = 50.0f;
-        for (int i = 0; i < game.lives; i++)
-        {
-            DrawTextureV(spaceshipImage, { x, 745 }, WHITE);
-            x += 50;
-        }
-
+    
         game.Draw();
         EndTextureMode();
 
@@ -210,7 +158,6 @@ int main()
     }
 
     CloseWindow();
-    UnloadFont(font);
     CloseAudioDevice();
     return 0;
 }

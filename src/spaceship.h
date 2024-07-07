@@ -16,6 +16,7 @@ public:
     void MoveRight();
     void FireLaser();
     Rectangle getRect();
+    Texture2D& GetSpaceshipImage();
 
     std::vector<Laser> lasers;
     

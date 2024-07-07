@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "globals.h"
 #include "spaceship.h"
 #include "obstacle.h"
@@ -19,6 +21,7 @@ public:
     Game &&operator=(Game &&g) = delete;
 
     void Draw();
+    void DrawUI();
     void Update();
     void DeleteInactiveAlienLasers();
     void HandleInput();
@@ -48,6 +51,9 @@ private:
     void CreateAliens();
     void MoveAliens(int speed);
     void MoveDownAliens(int distance);
+    std::string FormatWithLeadingZeroes(int number, int width);
+
+
     std::vector<Obstacle> obstacles;
     std::vector<Alien> aliens;
     std::vector<Laser> alienLasers;
@@ -72,4 +78,6 @@ private:
     MysteryShip mysteryShip;
     float mysteryShipSpawnInterval;
     float timeLastMysteryShipSpawn;
+
+    Font font;
 };

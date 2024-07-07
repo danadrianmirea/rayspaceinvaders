@@ -85,6 +85,11 @@ Rectangle Spaceship::getRect()
     return {position.x, position.y, (float)image.width, (float)image.height};
 }
 
+Texture2D& Spaceship::GetSpaceshipImage()
+{
+    return image;
+}
+
 void Spaceship::DeleteInactiveLasers()
 {
     auto it = std::remove_if(lasers.begin(), lasers.end(), [](Laser &l)

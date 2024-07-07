@@ -7,15 +7,14 @@
 
 Game::Game()
 {
-    InitAudioDevice();
-    SetMasterVolume(0.22f);
+   
     music = LoadMusicStream("Sounds/music.ogg");
     explosionSound = LoadSound("Sounds/explosion.ogg");
     font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
     target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR); // Texture scale filter to use
     firstTimeGameStart = true;
-    PlayMusicStream(music);
+    //PlayMusicStream(music);
     InitGame();
 }
 
@@ -123,7 +122,7 @@ void Game::DrawUI()
 
 void Game::Update()
 {
-    UpdateMusicStream(music);
+    //UpdateMusicStream(music);
 
     screenScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
     UpdateUI();

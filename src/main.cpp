@@ -6,6 +6,8 @@
 int main()
 {
     InitWindow(gameScreenWidth, gameScreenHeight, "Space invaders");
+    InitAudioDevice();
+    SetMasterVolume(0.22f);
     SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
     //  int display = GetCurrentMonitor();
     //  int windowWidth = (int)(GetMonitorWidth(display));

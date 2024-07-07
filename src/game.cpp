@@ -12,10 +12,11 @@ Game::Game()
     music = LoadMusicStream("Sounds/music.ogg");
     explosionSound = LoadSound("Sounds/explosion.ogg");
     font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
-    // PlayMusicStream(music);
-    InitGame();
+    target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
+    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR); // Texture scale filter to use
     firstTimeGameStart = true;
-    level = 1;
+    PlayMusicStream(music);
+    InitGame();
 }
 
 Game::~Game()
@@ -24,6 +25,8 @@ Game::~Game()
     UnloadMusicStream(music);
     UnloadSound(explosionSound);
     UnloadFont(font);
+    CloseAudioDevice();
+    UnloadRenderTexture(target);
 }
 
 void Game::InitGame()
@@ -47,6 +50,8 @@ void Game::InitGame()
     timeLastMysteryShipSpawn = 0.0f;
     mysteryShipSpawnInterval = GetRandomValue(10, 20);
     isFirstFrameAfterReset = true;
+    level = 1;
+    screenScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 }
 
 void Game::Reset()
@@ -60,6 +65,8 @@ void Game::Reset()
 
 void Game::Draw()
 {
+    BeginTextureMode(target);
+    ClearBackground(grey);
     spaceship.Draw();
     mysteryShip.Draw();
 
@@ -79,6 +86,16 @@ void Game::Draw()
     }
 
     DrawUI();
+    EndTextureMode();
+
+    BeginDrawing();
+    ClearBackground(BLACK);
+    DrawTexturePro(target.texture, (Rectangle){0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height},
+                   (Rectangle){(GetScreenWidth() - ((float)gameScreenWidth * screenScale)) * 0.5f, (GetScreenHeight() - ((float)gameScreenHeight * screenScale)) * 0.5f, (float)gameScreenWidth * screenScale, (float)gameScreenHeight * screenScale},
+                   (Vector2){0, 0}, 0.0f, WHITE);
+
+    DrawScreenSpaceUI();
+    EndDrawing();
 }
 
 void Game::DrawUI()
@@ -106,6 +123,9 @@ void Game::DrawUI()
 
 void Game::Update()
 {
+    UpdateMusicStream(music);
+
+    screenScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
     UpdateUI();
 
     bool running = (firstTimeGameStart == false && paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false);
@@ -549,4 +569,34 @@ std::string Game::FormatWithLeadingZeroes(int number, int width)
     int leadingZeros = width - numberText.length();
     numberText = std::string(leadingZeros, '0') + numberText;
     return numberText;
+}
+
+void Game::DrawScreenSpaceUI()
+{
+    if (exitWindowRequested)
+    {
+        DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+        DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
+    else if (firstTimeGameStart)
+    {
+        DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+        DrawText("Press SPACE to play", GetScreenWidth() / 2 - 200, GetScreenHeight() / 2, 40, yellow);
+    }
+
+    else if (paused)
+    {
+        DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+        DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
+    else if (lostWindowFocus)
+    {
+        DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+        DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
+    else if (gameOver)
+    {
+        DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+        DrawText("Game over, press SPACE to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
 }

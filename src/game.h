@@ -45,15 +45,15 @@ public:
     Music music;
     Sound explosionSound;
     const int maxLevels = 6;
-    
+
 private:
     Spaceship spaceship;
     void CreateObstacles();
     void CreateAliens();
     void MoveAliens(int speed);
     void MoveDownAliens(int distance);
+    void DrawScreenSpaceUI();
     std::string FormatWithLeadingZeroes(int number, int width);
-
 
     std::vector<Obstacle> obstacles;
     std::vector<Alien> aliens;
@@ -79,6 +79,10 @@ private:
     MysteryShip mysteryShip;
     float mysteryShipSpawnInterval;
     float timeLastMysteryShipSpawn;
+
+    float screenScale;
+
+    RenderTexture2D target;
 
     Font font;
 };

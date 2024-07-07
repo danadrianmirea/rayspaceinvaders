@@ -23,6 +23,7 @@ public:
     void Draw();
     void DrawUI();
     void Update();
+    void UpdateUI();
     void DeleteInactiveAlienLasers();
     void HandleInput();
     void AlienShootLaser();

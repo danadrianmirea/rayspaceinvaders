@@ -2,79 +2,39 @@
 #include <raylib.h>
 #include "game.h"
 
-void UpdateWindow(Game& game, float scale)
+void DrawScreenSpaceUI(Game& game)
 {
-    if (WindowShouldClose() || (IsKeyPressed(KEY_ESCAPE) && exitWindowRequested == false))
-    {
-        exitWindowRequested = true;
-        game.isInExitMenu = true;
-        return;
-    }
-
-    if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
-    {
-        if (fullscreen)
-        {
-            fullscreen = false;
-            SetWindowSize(windowWidth - borderW, windowHeight - borderH);
-        }
-        else
-        {
-            fullscreen = true;
-            SetWindowSize(windowWidth, windowHeight);
-        }
-        // ToggleFullscreen();
-        ToggleBorderlessWindowed();
-    }
-
-    if (game.firstTimeGameStart && IsKeyPressed(KEY_SPACE))
-    {
-        game.firstTimeGameStart = false;
-    }
-    else if (game.gameOver && IsKeyPressed(KEY_SPACE))
-    {
-        game.Reset();
-    }
-
     if (exitWindowRequested)
     {
-        if (IsKeyPressed(KEY_Y))
-        {
-            exitWindow = true;
-        }
-        else if (IsKeyPressed(KEY_N) || IsKeyPressed(KEY_ESCAPE))
-        {
-            exitWindowRequested = false;
-            game.isInExitMenu = false;
-        }
+        DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+        DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
+    else if (game.firstTimeGameStart)
+    {
+        DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+        DrawText("Press SPACE to play", GetScreenWidth() / 2 - 200, GetScreenHeight() / 2, 40, yellow);
     }
 
-    if (IsWindowFocused() == false)
+    else if (game.paused)
     {
-        game.lostWindowFocus = true;
+        DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+        DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
     }
-    else
+    else if (game.lostWindowFocus)
     {
-        game.lostWindowFocus = false;
+        DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+        DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
     }
-
-    if (exitWindowRequested == false && game.lostWindowFocus == false && game.gameOver == false && IsKeyPressed(KEY_P))
+    else if (game.gameOver)
     {
-        if (game.paused)
-        {
-            game.paused = false;
-        }
-        else
-        {
-            game.paused = true;
-        }
+        DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
+        DrawText("Game over, press SPACE to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
     }
 }
 
 int main()
 {
     InitWindow(gameScreenWidth, gameScreenHeight, "Space invaders");
-    
 
     SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
 
@@ -98,62 +58,26 @@ int main()
     float scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 
     Game game;
-    Texture2D spaceshipImage = LoadTexture("Graphics/spaceship.png");
 
     while (!exitWindow)
     {
         // UpdateMusicStream(game.music);
         scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
-        UpdateWindow(game, scale);
 
         game.Update();
 
         BeginTextureMode(target);
-
         ClearBackground(grey);
-    
         game.Draw();
         EndTextureMode();
 
         BeginDrawing();
         ClearBackground(BLACK);
+        DrawTexturePro(target.texture, (Rectangle){0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height},
+                       (Rectangle){(GetScreenWidth() - ((float)gameScreenWidth * scale)) * 0.5f, (GetScreenHeight() - ((float)gameScreenHeight * scale)) * 0.5f, (float)gameScreenWidth * scale, (float)gameScreenHeight * scale},
+                       (Vector2){0, 0}, 0.0f, WHITE);
 
-        DrawTexturePro(target.texture, (Rectangle) { 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
-            (Rectangle) {
-            (GetScreenWidth() - ((float)gameScreenWidth * scale)) * 0.5f, (GetScreenHeight() - ((float)gameScreenHeight * scale)) * 0.5f,
-                (float)gameScreenWidth* scale, (float)gameScreenHeight* scale
-        },
-            (Vector2) {
-            0, 0
-        }, 0.0f, WHITE);
-
-        if (exitWindowRequested)
-        {
-            DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-            DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
-        }
-        else if (game.firstTimeGameStart)
-        {
-            DrawRectangleRounded({(float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120}, 0.76f, 20, BLACK);
-            DrawText("Press SPACE to play", GetScreenWidth() / 2 - 200, GetScreenHeight() / 2, 40, yellow);
-        }
-
-        else if (game.paused)
-        {
-            DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-            DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
-        }
-        else if (game.lostWindowFocus)
-        {
-            DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-            DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
-        }
-        else if (game.gameOver)
-        {
-            DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-            DrawText("Game over, press SPACE to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
-        }
-
+        DrawScreenSpaceUI(game);
         EndDrawing();
     }
 

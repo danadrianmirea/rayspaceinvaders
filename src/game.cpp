@@ -166,22 +166,6 @@ void Game::UpdateUI()
         return;
     }
 
-    if (IsKeyPressed(KEY_ENTER) && (IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT)))
-    {
-        if (fullscreen)
-        {
-            fullscreen = false;
-            SetWindowSize(windowWidth - borderW, windowHeight - borderH);
-        }
-        else
-        {
-            fullscreen = true;
-            SetWindowSize(windowWidth, windowHeight);
-        }
-        // ToggleFullscreen();
-        ToggleBorderlessWindowed();
-    }
-
     if (firstTimeGameStart && IsKeyPressed(KEY_SPACE))
     {
         firstTimeGameStart = false;
@@ -190,7 +174,7 @@ void Game::UpdateUI()
     {
         Reset();
     }
-
+    
     if (exitWindowRequested)
     {
         if (IsKeyPressed(KEY_Y))

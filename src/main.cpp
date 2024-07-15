@@ -8,16 +8,8 @@ int main()
     InitWindow(gameScreenWidth, gameScreenHeight, "Space invaders");
     InitAudioDevice();
     SetMasterVolume(0.22f);
-    SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
-    //  int display = GetCurrentMonitor();
-    //  int windowWidth = (int)(GetMonitorWidth(display));
-    //  int windowHeight = (int)(GetMonitorHeight(display));
-    //  SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);.
-    SetWindowSize(windowWidth - borderW, windowHeight - borderH);
-    // MaximizeWindow();
-    SetWindowPosition(50, 50);
-    // ToggleFullscreen();
-    
+    SetExitKey(KEY_NULL);
+
     gameScreenWidth = gameScreenWidth + offset;
     gameScreenHeight = gameScreenHeight + 2 * offset;
      

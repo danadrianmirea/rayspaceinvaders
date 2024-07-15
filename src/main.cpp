@@ -25,10 +25,12 @@ int main()
     Game game;
 
     ToggleBorderlessWindowed();
+    float dt = GetFrameTime();
 
     while (!exitWindow)
     {
-        game.Update();
+        dt = GetFrameTime();
+        game.Update(dt);
         game.Draw();
     }
 

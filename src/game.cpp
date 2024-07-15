@@ -120,7 +120,7 @@ void Game::DrawUI()
     }
 }
 
-void Game::Update()
+void Game::Update(float dt)
 {
     //UpdateMusicStream(music);
 

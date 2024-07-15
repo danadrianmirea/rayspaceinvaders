@@ -22,7 +22,7 @@ public:
 
     void Draw();
     void DrawUI();
-    void Update();
+    void Update(float dt);
     void UpdateUI();
     void DeleteInactiveAlienLasers();
     void HandleInput();

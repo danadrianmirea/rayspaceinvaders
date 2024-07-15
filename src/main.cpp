@@ -21,6 +21,7 @@ int main()
 
     while (!exitWindow)
     {
+        // todo scale game correctly using dt, seems to run differently on different machines
         dt = GetFrameTime();
         game.Update(dt);
         game.Draw();

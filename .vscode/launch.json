@@ -8,7 +8,7 @@
           "name": "Debug",
           "type": "cppdbg",
           "request": "launch",
-          "program": "${workspaceFolder}/spaceinvaders.exe",
+          "program": "${workspaceFolder}/game.exe",
           "args": [],
           "stopAtEntry": false,
           "cwd": "${workspaceFolder}",
@@ -42,10 +42,10 @@
           "cwd": "${workspaceFolder}",
           "environment": [],
           "externalConsole": false,
-          "program": "${workspaceFolder}/spaceinvaders.exe",
+          "program": "${workspaceFolder}/game.exe",
           "MIMode": "gdb",
           "windows": {
-            "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe",
+            "program": "${workspaceFolder}/game.exe",
             "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe"
           },
           "osx": {

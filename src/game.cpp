@@ -6,8 +6,7 @@
 #include <iostream>
 
 Game::Game()
-{
-   
+{   
     music = LoadMusicStream("Sounds/music.ogg");
     explosionSound = LoadSound("Sounds/explosion.ogg");
     font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
@@ -32,9 +31,7 @@ void Game::InitGame()
 {
     CreateObstacles();
     CreateAliens();
-    aliensDirection = 1;
-    //alienLaserSpeed = -3;
-    
+    aliensDirection = 1;    
     aliensReadyToFire = false;
     alienFireTimer = 0.0f;
     paused = false;
@@ -102,13 +99,14 @@ void Game::DrawUI()
     DrawRectangleRoundedLines({10, 10, 780, 780}, 0.18f, 20, 2, yellow);
 
     DrawLineEx({25, 730}, {775, 730}, 3, yellow);
-    DrawTextEx(font, "LEVEL 01", {570, 740}, 34, 2, yellow);
+    std::string levelText = "Level " + FormatWithLeadingZeroes(level, 2);
+    DrawTextEx(font, levelText.c_str(), {570, 740}, 34, 2, yellow);
 
-    DrawTextEx(font, "SCORE", {50, 15}, 34, 2, yellow);
+    DrawTextEx(font, "Score", {50, 15}, 34, 2, yellow);
     std::string scoreText = FormatWithLeadingZeroes(score, 7);
     DrawTextEx(font, scoreText.c_str(), {50, 40}, 34, 2, yellow);
 
-    DrawTextEx(font, "HIGH-SCORE", {570, 15}, 34, 2, yellow);
+    DrawTextEx(font, "High Score", {570, 15}, 34, 2, yellow);
     std::string highScoreText = FormatWithLeadingZeroes(highScore, 7);
     DrawTextEx(font, highScoreText.c_str(), {570, 40}, 34, 2, yellow);
 

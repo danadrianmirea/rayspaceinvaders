@@ -50,7 +50,7 @@ private:
     Spaceship spaceship;
     void CreateObstacles();
     void CreateAliens();
-    void MoveAliens(int speed);
+    void MoveAliens(float dt, int speed);
     void MoveDownAliens(int distance);
     void DrawScreenSpaceUI();
     std::string FormatWithLeadingZeroes(int number, int width);
@@ -66,14 +66,18 @@ private:
     const int alienOffsetX = 75;
     const int alienOffsetY = 100;
 
-    float alienLaserSpeed;
-    float alienShipSpeed;
+    static const int maxLevel = 10;
+    float alienLaserSpeeds[maxLevel] = {-400, -400, -400, -400, -400, -400, -400, -400, -400, -400};
+    float alienShipSpeeds[maxLevel] = {50, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    float alienFireRates[maxLevel] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+
     bool aliensReadyToFire;
     float alienFireTimer;
-    const float alienFireRate = 0.350f;
+
     bool alienUpdateTimerExpired;
     bool isFirstFrameAfterReset;
     float alienUpdateTimer;
+
     const float alienUpdateRate = 0.01f;
 
     MysteryShip mysteryShip;
@@ -81,8 +85,6 @@ private:
     float timeLastMysteryShipSpawn;
 
     float screenScale;
-
     RenderTexture2D target;
-
     Font font;
 };

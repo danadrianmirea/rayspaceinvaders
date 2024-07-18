@@ -10,7 +10,7 @@ public:
     Spaceship();
     ~Spaceship();
     void Reset();
-    void Update();
+    void Update(float dt);
     void Draw();
     void MoveLeft();
     void MoveRight();
@@ -32,7 +32,7 @@ private:
     const float laserFireInterval = 0.350f;
 
     const int cShipSpeed = 4;
-    const int cLaserSpeed = 4;
+    const int cLaserSpeed = 400;
 
     Sound laserSound;
 };

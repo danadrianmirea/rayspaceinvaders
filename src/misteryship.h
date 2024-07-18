@@ -7,7 +7,7 @@ class MysteryShip
 public:
     MysteryShip();
     ~MysteryShip();
-    void Update();
+    void Update(float dt);
     void Draw();
     void Spawn();
     Rectangle getRect();
@@ -16,4 +16,5 @@ private:
     Vector2 position;
     Texture2D image;
     int speed;
+    const int cMysteryShipSpeed = 100;
 };

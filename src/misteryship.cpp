@@ -20,12 +20,12 @@ void MysteryShip::Spawn()
     if(side == 0)
     {
         position.x = frameOffsetLeft;
-        speed = 1;
+        speed = 1 * cMysteryShipSpeed;
     }
     else 
     {
         position.x = gameScreenWidth - image.width - frameOffsetRight;
-        speed = -1;
+        speed = -1 * cMysteryShipSpeed;
     }
     alive = true;
 }
@@ -42,12 +42,11 @@ Rectangle MysteryShip::getRect()
     }
 }
 
-void MysteryShip::Update()
+void MysteryShip::Update(float dt)
 {
-    
     if(alive)
     {
-        position.x += speed;
+        position.x += speed*dt;
         if(position.x > gameScreenWidth - image.width - frameOffsetRight || position.x < frameOffsetLeft)
         {
             alive = false;

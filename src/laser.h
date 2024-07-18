@@ -6,7 +6,7 @@ class Laser
 {
 public:
     Laser(Vector2 pos, int spd);
-    void Update();
+    void Update(float dt);
     void Draw();
     bool active;
     Rectangle getRect();

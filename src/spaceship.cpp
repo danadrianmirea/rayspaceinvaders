@@ -28,13 +28,13 @@ void Spaceship::Reset()
     readyToFire = false;
 }
 
-void Spaceship::Update()
+void Spaceship::Update(float dt)
 {
     for (auto &l : lasers)
     {
         if (l.active)
         {
-            l.Update();
+            l.Update(dt);
         }
     }
 

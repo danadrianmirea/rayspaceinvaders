@@ -33,8 +33,8 @@ void Game::InitGame()
     CreateObstacles();
     CreateAliens();
     aliensDirection = 1;
-    alienLaserSpeed = -3;
-    alienShipSpeed = 1;
+    //alienLaserSpeed = -3;
+    
     aliensReadyToFire = false;
     alienFireTimer = 0.0f;
     paused = false;
@@ -140,15 +140,15 @@ void Game::Update(float dt)
         }
         HandleInput();
 
-        spaceship.Update();
-        mysteryShip.Update();
+        spaceship.Update(dt);
+        mysteryShip.Update(dt);
 
-        MoveAliens(alienShipSpeed);
+        MoveAliens(dt, alienShipSpeeds[level-1]);
         AlienShootLaser();
 
         for (auto &alienLaser : alienLasers)
         {
-            alienLaser.Update();
+            alienLaser.Update(dt);
         }
 
         DeleteInactiveAlienLasers();
@@ -248,14 +248,14 @@ void Game::AlienShootLaser()
         {
             int randomIndex = GetRandomValue(0, aliens.size() - 1);
             Alien &alien = aliens[randomIndex];
-            alienLasers.push_back(Laser({alien.position.x + alien.alienImages[alien.type - 1].width / 2, alien.position.y + alien.alienImages[alien.type - 1].height}, alienLaserSpeed));
+            alienLasers.push_back(Laser({alien.position.x + alien.alienImages[alien.type - 1].width / 2, alien.position.y + alien.alienImages[alien.type - 1].height}, alienLaserSpeeds[level-1]));
             aliensReadyToFire = false;
             alienFireTimer = 0.0f;
         }
         else
         {
             alienFireTimer += GetFrameTime();
-            if (alienFireTimer >= alienFireRate)
+            if (alienFireTimer >= alienFireRates[level-1])
             {
                 aliensReadyToFire = true;
             }
@@ -507,7 +507,7 @@ void Game::CreateAliens()
     }
 }
 
-void Game::MoveAliens(int speed)
+void Game::MoveAliens(float dt, int speed)
 {
     if (alienUpdateTimerExpired)
     {
@@ -523,7 +523,7 @@ void Game::MoveAliens(int speed)
                 aliensDirection = 1;
                 MoveDownAliens(4);
             }
-            alien.Update(speed, aliensDirection);
+            alien.Update(dt, speed, aliensDirection);
         }
         alienUpdateTimerExpired = false;
     }

@@ -9,9 +9,9 @@ Laser::Laser(Vector2 pos, int spd)
     active = true;
 }
 
-void Laser::Update()
+void Laser::Update(float dt)
 {
-    position.y -= speed;
+    position.y -= speed*dt;
 
     if(active)
     {

@@ -27,9 +27,9 @@ Alien::Alien(int typeId, Vector2 pos)
     }
 }
 
-void Alien::Update(int speed, int direction)
+void Alien::Update(float dt, int speed, int direction)
 {
-    position.x += speed*direction;
+    position.x += speed*direction*dt;
 }
 
 void Alien::Draw()

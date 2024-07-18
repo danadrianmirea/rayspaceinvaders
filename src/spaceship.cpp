@@ -52,18 +52,18 @@ void Spaceship::Draw()
     }
 }
 
-void Spaceship::MoveLeft()
+void Spaceship::MoveLeft(float dt)
 {
-    position.x -= shipSpeed;
+    position.x -= shipSpeed*dt;
     if (position.x < frameOffsetLeft)
     {
         position.x = frameOffsetLeft;
     }
 }
 
-void Spaceship::MoveRight()
+void Spaceship::MoveRight(float dt)
 {
-    position.x += shipSpeed;
+    position.x += shipSpeed*dt;
     if (position.x > gameScreenWidth - image.width - frameOffsetRight)
     {
         position.x = gameScreenWidth - image.width - frameOffsetRight;

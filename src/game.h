@@ -25,7 +25,7 @@ public:
     void Update(float dt);
     void UpdateUI();
     void DeleteInactiveAlienLasers();
-    void HandleInput();
+    void HandleInput(float dt);
     void AlienShootLaser();
     void CheckForCollisions();
     void GameOver();

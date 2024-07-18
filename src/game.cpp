@@ -138,7 +138,7 @@ void Game::Update(float dt)
                 timeLastMysteryShipSpawn = GetTime();
             }
         }
-        HandleInput();
+        HandleInput(dt);
 
         spaceship.Update(dt);
         mysteryShip.Update(dt);
@@ -217,7 +217,7 @@ void Game::DeleteInactiveAlienLasers()
     alienLasers.erase(it, alienLasers.end());
 }
 
-void Game::HandleInput()
+void Game::HandleInput(float dt)
 {
     if (isFirstFrameAfterReset)
     {
@@ -227,11 +227,11 @@ void Game::HandleInput()
 
     if (IsKeyDown(KEY_LEFT))
     {
-        spaceship.MoveLeft();
+        spaceship.MoveLeft(dt);
     }
     else if (IsKeyDown(KEY_RIGHT))
     {
-        spaceship.MoveRight();
+        spaceship.MoveRight(dt);
     }
 
     if (IsKeyDown(KEY_SPACE))

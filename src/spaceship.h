@@ -12,8 +12,8 @@ public:
     void Reset();
     void Update(float dt);
     void Draw();
-    void MoveLeft();
-    void MoveRight();
+    void MoveLeft(float dt);
+    void MoveRight(float dt);
     void FireLaser();
     Rectangle getRect();
     Texture2D& GetSpaceshipImage();
@@ -31,7 +31,7 @@ private:
     float laserFireTimer;
     const float laserFireInterval = 0.350f;
 
-    const int cShipSpeed = 4;
+    const int cShipSpeed = 400;
     const int cLaserSpeed = 400;
 
     Sound laserSound;

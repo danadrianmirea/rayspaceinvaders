@@ -68,7 +68,7 @@ private:
 
     static const int maxLevel = 10;
     float alienLaserSpeeds[maxLevel] = {-400, -400, -400, -400, -400, -400, -400, -400, -400, -400};
-    float alienShipSpeeds[maxLevel] = {50, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    float alienShipSpeeds[maxLevel] = {50, 50, 50, 50, 50, 50, 50, 50, 50, 50};
     float alienFireRates[maxLevel] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
 
     bool aliensReadyToFire;

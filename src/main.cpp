@@ -2,6 +2,7 @@
 #include <raylib.h>
 // #include "raymath.h"
 #include "game.h"
+#include "globals.h"
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -27,6 +28,13 @@ Color grey = Color{ 29, 29, 27, 255 };
 Color yellow = Color{ 243, 216, 63, 255 };
 
 int offset = 50;
+
+// Global variables for the game loop
+Game* gameInstance = nullptr;
+Font gameFont;
+RenderTexture2D gameTarget;
+float gameScale = 1.0f;
+Texture2D spaceshipImage;
 
 void UpdateWindow(Game& game, float scale)
 {
@@ -93,6 +101,78 @@ void UpdateWindow(Game& game, float scale)
     }
 }
 
+// Main game loop function that will be called by emscripten_set_main_loop
+void GameLoop()
+{
+    UpdateMusicStream(gameInstance->music);
+
+    gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
+    UpdateWindow(*gameInstance, gameScale);
+
+    gameInstance->Update();
+
+    BeginTextureMode(gameTarget);
+
+    ClearBackground(grey);
+    DrawRectangleRoundedLines({ 10, 10, 780, 780 }, 0.18f, 20, 2, yellow);
+
+    DrawLineEx({ 25, 730 }, { 775, 730 }, 3, yellow);
+    DrawTextEx(gameFont, "LEVEL 01", { 570, 740 }, 34, 2, yellow);
+
+    DrawTextEx(gameFont, "SCORE", { 50, 15 }, 34, 2, yellow);
+    std::string scoreText = FormatWithLeadingZeroes(gameInstance->score, 7);
+    DrawTextEx(gameFont, scoreText.c_str(), { 50, 40 }, 34, 2, yellow);
+
+    DrawTextEx(gameFont, "HIGH-SCORE", { 570, 15 }, 34, 2, yellow);
+    std::string highScoreText = FormatWithLeadingZeroes(gameInstance->highScore, 7);
+    DrawTextEx(gameFont, highScoreText.c_str(), { 570, 40 }, 34, 2, yellow);
+
+    float x = 50.0f;
+    for (int i = 0; i < gameInstance->lives; i++)
+    {
+        DrawTextureV(spaceshipImage, { x, 745 }, WHITE);
+        x += 50;
+    }
+
+    gameInstance->Draw();
+    EndTextureMode();
+
+    BeginDrawing();
+    ClearBackground(BLACK);
+
+    DrawTexturePro(gameTarget.texture, (Rectangle) { 0.0f, 0.0f, (float)gameTarget.texture.width, (float)-gameTarget.texture.height },
+        (Rectangle) {
+        (GetScreenWidth() - ((float)gameScreenWidth * gameScale)) * 0.5f, (GetScreenHeight() - ((float)gameScreenHeight * gameScale)) * 0.5f,
+            (float)gameScreenWidth* gameScale, (float)gameScreenHeight* gameScale
+    },
+        (Vector2) {
+        0, 0
+    }, 0.0f, WHITE);
+
+    if (exitWindowRequested)
+    {
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+        DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
+    else if (gameInstance->paused)
+    {
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+        DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
+    else if (gameInstance->lostWindowFocus)
+    {
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+        DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
+    else if (gameInstance->gameOver)
+    {
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+        DrawText("Game over, press SPACE to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
+
+    EndDrawing();
+}
+
 int main()
 {
     InitWindow(gameScreenWidth, gameScreenHeight, "Space invaders");
@@ -100,7 +180,7 @@ int main()
     SetMasterVolume(0.22f);
     SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
 
-    Font font = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
+    gameFont = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
 
     //  int display = GetCurrentMonitor();
     //  int windowWidth = (int)(GetMonitorWidth(display));
@@ -115,89 +195,32 @@ int main()
 
     gameScreenWidth = gameScreenWidth + offset;
     gameScreenHeight = gameScreenHeight + 2 * offset;
-    RenderTexture2D target = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
-    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR); // Texture scale filter to use
+    gameTarget = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
+    SetTextureFilter(gameTarget.texture, TEXTURE_FILTER_BILINEAR); // Texture scale filter to use
     SetTargetFPS(144);
 
-    float scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
+    gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 
-    Game game;
+    gameInstance = new Game();
+    spaceshipImage = LoadTexture("Graphics/spaceship.png");
 
+#ifdef EMSCRIPTEN_BUILD
+    // Use emscripten_set_main_loop for Emscripten builds
+    emscripten_set_main_loop(GameLoop, 0, 1);
+#else
+    // Regular desktop game loop
     while (!exitWindow)
     {
-        UpdateMusicStream(game.music);
-
-        scale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
-        UpdateWindow(game, scale);
-
-        game.Update();
-
-        BeginTextureMode(target);
-
-        ClearBackground(grey);
-        DrawRectangleRoundedLines({ 10, 10, 780, 780 }, 0.18f, 20, 2, yellow);
-
-        DrawLineEx({ 25, 730 }, { 775, 730 }, 3, yellow);
-        DrawTextEx(font, "LEVEL 01", { 570, 740 }, 34, 2, yellow);
-
-        DrawTextEx(font, "SCORE", { 50, 15 }, 34, 2, yellow);
-        std::string scoreText = FormatWithLeadingZeroes(game.score, 7);
-        DrawTextEx(font, scoreText.c_str(), { 50, 40 }, 34, 2, yellow);
-
-        DrawTextEx(font, "HIGH-SCORE", { 570, 15 }, 34, 2, yellow);
-        std::string highScoreText = FormatWithLeadingZeroes(game.highScore, 7);
-        DrawTextEx(font, highScoreText.c_str(), { 570, 40 }, 34, 2, yellow);
-
-        Texture2D spaceshipImage = LoadTexture("Graphics/spaceship.png");
-
-        float x = 50.0f;
-        for (int i = 0; i < game.lives; i++)
-        {
-            DrawTextureV(spaceshipImage, { x, 745 }, WHITE);
-            x += 50;
-        }
-
-        game.Draw();
-        EndTextureMode();
-
-        BeginDrawing();
-        ClearBackground(BLACK);
-
-        DrawTexturePro(target.texture, (Rectangle) { 0.0f, 0.0f, (float)target.texture.width, (float)-target.texture.height },
-            (Rectangle) {
-            (GetScreenWidth() - ((float)gameScreenWidth * scale)) * 0.5f, (GetScreenHeight() - ((float)gameScreenHeight * scale)) * 0.5f,
-                (float)gameScreenWidth* scale, (float)gameScreenHeight* scale
-        },
-            (Vector2) {
-            0, 0
-        }, 0.0f, WHITE);
-
-        if (exitWindowRequested)
-        {
-            DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-            DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
-        }
-        else if (game.paused)
-        {
-            DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-            DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
-        }
-        else if (game.lostWindowFocus)
-        {
-            DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-            DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
-        }
-        else if (game.gameOver)
-        {
-            DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-            DrawText("Game over, press SPACE to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
-        }
-
-        EndDrawing();
+        GameLoop();
     }
+#endif
 
+    // Cleanup
+    delete gameInstance;
     CloseWindow();
-    UnloadFont(font);
+    UnloadFont(gameFont);
+    UnloadTexture(spaceshipImage);
+    UnloadRenderTexture(gameTarget);
     CloseAudioDevice();
     return 0;
 }

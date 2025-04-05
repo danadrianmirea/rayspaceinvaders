@@ -21,7 +21,7 @@
 #
 #**************************************************************************************************
 
-.PHONY: all clean
+.PHONY: all clean emscripten
 
 # Define required raylib variables
 PROJECT_NAME       ?= game
@@ -245,7 +245,7 @@ ifeq ($(PLATFORM),PLATFORM_WEB)
     endif
 
     # Define a custom shell .html and output extension
-    CFLAGS += --shell-file $(RAYLIB_PATH)/src/shell.html
+    CFLAGS += --shell-file shell.html
     EXT = .html
 endif
 
@@ -371,7 +371,7 @@ OBJ_DIR = obj
 # Define all object files from source files
 SRC = $(call rwildcard, *.c, *.h)
 #OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-OBJS ?= main.c
+OBJS ?= src/*.cpp
 
 # For Android platform we call a custom Makefile.Android
 ifeq ($(PLATFORM),PLATFORM_ANDROID)
@@ -419,4 +419,8 @@ ifeq ($(PLATFORM),PLATFORM_WEB)
 	del *.o *.html *.js
 endif
 	@echo Cleaning done
+
+# Add Emscripten build target
+emscripten:
+	$(MAKE) PLATFORM=PLATFORM_WEB CFLAGS="-DEMSCRIPTEN_BUILD -Wall -std=c++14 -D_DEFAULT_SOURCE -Wno-missing-braces -s -O1" all
 

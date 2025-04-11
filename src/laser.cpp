@@ -2,7 +2,7 @@
 #include "globals.h"
 #include "laser.h"
 
-Laser::Laser(Vector2 pos, int spd)
+Laser::Laser(Vector2 pos, float spd)
 {
     position = pos;
     speed = spd;

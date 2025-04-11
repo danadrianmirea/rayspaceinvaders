@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 #include <vector>
 #include "raylib.h"
 #include "laser.h"
@@ -28,7 +30,7 @@ private:
     int laserSpeed;
     bool readyToFire;
     float laserFireTimer;
-    const float laserFireInterval = 0.350f;
+    const float laserFireInterval = 0.700f;
 
     const int cShipSpeed = 2;
     const int cLaserSpeed = 4;

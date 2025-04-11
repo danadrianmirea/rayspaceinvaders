@@ -5,7 +5,7 @@
 class Laser
 {
 public:
-    Laser(Vector2 pos, int spd);
+    Laser(Vector2 pos, float spd);
     void Update();
     void Draw();
     bool active;
@@ -16,7 +16,7 @@ public:
 
 private:
     Vector2 position;
-    int speed;
+    float speed;
 
     Color laserColor = YELLOW;
 

@@ -104,7 +104,9 @@ void UpdateWindow(Game& game, float scale)
 // Main game loop function that will be called by emscripten_set_main_loop
 void GameLoop()
 {
+#if MUSIC == 1
     UpdateMusicStream(gameInstance->music);
+#endif
 
     gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
     UpdateWindow(*gameInstance, gameScale);

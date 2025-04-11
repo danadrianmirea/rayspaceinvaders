@@ -6,9 +6,11 @@
 
 Game::Game()
 {
-    music = LoadMusicStream("Sounds/music.ogg");
     explosionSound = LoadSound("Sounds/explosion.ogg");
+#if MUSIC == 1
+    music = LoadMusicStream("Sounds/music.ogg");
     PlayMusicStream(music);
+#endif
     InitGame();
     
 }
@@ -16,7 +18,9 @@ Game::Game()
 Game::~Game()
 {
     Alien::UnloadImages();
+#if MUSIC == 1
     UnloadMusicStream(music);
+#endif
     UnloadSound(explosionSound);
 }
 
@@ -26,7 +30,7 @@ void Game::InitGame()
     CreateAliens();
     aliensDirection = 1;
     alienLaserSpeed = -3;
-    alienShipSpeed = 1;
+    alienShipSpeed = 0.4f;
     aliensReadyToFire = false;
     alienFireTimer = 0.0f;
     paused = false;
@@ -402,7 +406,7 @@ void Game::CreateAliens()
     }
 }
 
-void Game::MoveAliens(int speed)
+void Game::MoveAliens(float speed)
 {
     if (alienUpdateTimerExpired)
     {

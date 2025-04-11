@@ -43,7 +43,7 @@ private:
     Spaceship spaceship;
     void CreateObstacles();
     void CreateAliens();
-    void MoveAliens(int speed);
+    void MoveAliens(float speed);
     void MoveDownAliens(int distance);
     std::vector<Obstacle> obstacles;
     std::vector<Alien> aliens;

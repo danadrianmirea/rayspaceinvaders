@@ -8,6 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Set raylib path
 set(RAYLIB_PATH "C:/raylib/raylib" CACHE PATH "Path to raylib source directory")
 
+# Configure static linking
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
+
 # Set source files
 set(SOURCES
     src/main.cpp

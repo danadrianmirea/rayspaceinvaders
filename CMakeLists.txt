@@ -62,6 +62,8 @@ if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4)
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+    target_link_options(${PROJECT_NAME} PRIVATE -static -static-libgcc -static-libstdc++)
+    message(STATUS "Building statically linked executable")
 endif()
 
 # Copy resources to build directory

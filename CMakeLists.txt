@@ -60,9 +60,17 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 # Set compiler flags
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+    # Hide console window in Release builds
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
+    )
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
     target_link_options(${PROJECT_NAME} PRIVATE -static -static-libgcc -static-libstdc++)
+    # Hide console window in Release builds for MinGW
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        LINK_FLAGS_RELEASE "-mwindows"
+    )
     message(STATUS "Building statically linked executable")
 endif()
 

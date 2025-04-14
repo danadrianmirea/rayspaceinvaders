@@ -120,7 +120,8 @@ void GameLoop()
     DrawRectangleRoundedLinesEx(border, 0.18f, 20, 2.0f, yellow);
 
     DrawLineEx({ 25, 730 }, { 775, 730 }, 3, yellow);
-    DrawTextEx(gameFont, "LEVEL 01", { 570, 740 }, 34, 2, yellow);
+    std::string levelText = "LEVEL " + FormatWithLeadingZeroes(gameInstance->currentLevel, 2);
+    DrawTextEx(gameFont, levelText.c_str(), { 570, 740 }, 34, 2, yellow);
 
     DrawTextEx(gameFont, "SCORE", { 50, 15 }, 34, 2, yellow);
     std::string scoreText = FormatWithLeadingZeroes(gameInstance->score, 7);

@@ -63,8 +63,7 @@ void Game::InitGame()
     
     // Initialize player's fire rate
     float baseFireRate = 0.350f;
-    float alienFireRate = baseFireRate * (1.0f / (1.05f * currentLevel));
-    float newFireRate = alienFireRate * 2.0f;  // Make player fire rate 50% slower
+    float newFireRate = baseFireRate * 1.67f;  // Start with base fire rate at 60% speed
     spaceship.SetFireRate(newFireRate);
 }
 
@@ -176,6 +175,7 @@ void Game::Update()
         if (IsKeyPressed(KEY_SPACE))
         {
             gameOver = false;
+            isFirstFrameAfterReset = true;  // Reset this flag when restarting
             InitGame();  // Reset the entire game state
         }
     }
@@ -520,10 +520,9 @@ void Game::AdvanceLevel()
     // Increase alien fire rate by 5% each level
     alienLaserSpeed *= 1.05f;
     
-    // Update player's fire rate to be 50% slower than aliens and scale with level
-    float baseFireRate = 0.350f;  // Base fire rate
-    float alienFireRate = baseFireRate * (1.0f / (1.05f * currentLevel));  // Calculate current alien fire rate
-    float newFireRate = alienFireRate * 2.0f;  // Make player fire rate 50% slower (multiply by 2.0)
+    // Update player's fire rate to scale with level
+    float currentFireRate = spaceship.GetFireRate();
+    float newFireRate = currentFireRate * 0.9f;  // Make fire rate 10% faster each level
     spaceship.SetFireRate(newFireRate);
     
     // Clear existing aliens and create new ones

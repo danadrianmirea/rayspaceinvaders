@@ -171,12 +171,38 @@ void GameLoop()
     else if (gameInstance->gameOver)
     {
         DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-        DrawText("Game over, press SPACE to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+        DrawText("Game over, press any key to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+        
+        if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
+            IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
+            IsKeyPressed(KEY_A) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_W) || IsKeyPressed(KEY_S)) {
+            gameInstance->gameOver = false;
+            gameInstance->isFirstFrameAfterReset = true;  // Set flag to ignore first input
+            gameInstance->InitGame();  // Reset the entire game state
+        }
     }
     else if (gameInstance->lostLife)
     {
         DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
         DrawText("You lost a life! Press any key to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
+    else if (gameInstance->isFirstStartup)
+    {
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 200), 1000, 400 }, 0.76f, 20, BLACK);
+        DrawText("Welcome to Space Invaders!", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 150, 40, yellow);
+        DrawText("Controls:", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 80, 30, yellow);
+        DrawText("Left/Right Arrow Keys - Move spaceship", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 30, 25, yellow);
+        DrawText("Space - Shoot", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 10, 25, yellow);
+        DrawText("P - Pause game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 50, 25, yellow);
+        DrawText("ESC - Exit game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 90, 25, yellow);
+        DrawText("Press any key to start the game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 150, 30, yellow);
+        
+        if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
+            IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
+            IsKeyPressed(KEY_A) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_W) || IsKeyPressed(KEY_S)) {
+            gameInstance->isFirstStartup = false;
+            gameInstance->isFirstFrameAfterReset = true;  // Set flag to ignore first input
+        }
     }
 
     EndDrawing();

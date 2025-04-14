@@ -34,6 +34,8 @@ public:
     bool lostWindowFocus;
     bool gameOver;
     bool lostLife;
+    bool isFirstStartup;  // New state variable for first startup
+    bool isFirstFrameAfterReset;  // Flag to ignore first input after state changes
     float lostLifeTimer;  // Timer for debuff after losing a life
     int lives;
     int score;
@@ -66,7 +68,6 @@ private:
     float alienFireTimer;
     const float alienFireRate = 0.350f;
     bool alienUpdateTimerExpired;
-    bool isFirstFrameAfterReset;
     float alienUpdateTimer;
     const float alienUpdateRate = 0.01f;
 

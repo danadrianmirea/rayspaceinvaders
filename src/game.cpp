@@ -12,7 +12,7 @@ Game::Game()
     PlayMusicStream(music);
 #endif
     InitGame();
-    
+    isFirstStartup = true;  // Initialize first startup state
 }
 
 Game::~Game()
@@ -52,7 +52,7 @@ void Game::InitGame()
     gameOver = false;
     timeLastMysteryShipSpawn = 0.0f;
     mysteryShipSpawnInterval = GetRandomValue(10, 20);
-    isFirstFrameAfterReset = true;
+    isFirstFrameAfterReset = true;  // Set flag to ignore first input
 
     // Reset spaceship position and state
     spaceship.Reset();
@@ -122,7 +122,7 @@ void Game::Draw()
 
 void Game::Update()
 {
-    bool running = (paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false && lostLife == false);
+    bool running = (paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false && lostLife == false && isFirstStartup == false);
     if (running)
     {
         double currentTime = GetTime();
@@ -190,9 +190,16 @@ void Game::DeleteInactiveAlienLasers()
 
 void Game::HandleInput()
 {
-    if(isFirstFrameAfterReset)
+    // Clear the first frame flag if it's set
+    if (isFirstFrameAfterReset)
     {
         isFirstFrameAfterReset = false;
+        return;
+    }
+
+    // Don't process input if game is not running
+    if (paused || lostWindowFocus || isInExitMenu || gameOver || lostLife || isFirstStartup)
+    {
         return;
     }
 

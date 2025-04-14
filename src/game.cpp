@@ -139,16 +139,18 @@ void Game::HandleInput()
         return;
     }
 
-    if (IsKeyDown(KEY_LEFT))
+    // Movement controls (both arrow keys and WASD)
+    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
     {
         spaceship.MoveLeft();
     }
-    else if (IsKeyDown(KEY_RIGHT))
+    else if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
     {
         spaceship.MoveRight();
     }
 
-    if (IsKeyDown(KEY_SPACE))
+    // Fire control (both space and W)
+    if (IsKeyDown(KEY_SPACE) || IsKeyDown(KEY_W))
     {
         spaceship.FireLaser();
     }

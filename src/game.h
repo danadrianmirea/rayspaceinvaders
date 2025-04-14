@@ -37,6 +37,7 @@ public:
     bool isFirstStartup;  // New state variable for first startup
     bool isFirstFrameAfterReset;  // Flag to ignore first input after state changes
     float lostLifeTimer;  // Timer for debuff after losing a life
+    float startupDelayTimer;  // Timer for startup delay
     int lives;
     int score;
     int highScore;

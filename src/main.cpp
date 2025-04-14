@@ -177,8 +177,8 @@ void GameLoop()
             IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
             IsKeyPressed(KEY_A) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_W) || IsKeyPressed(KEY_S)) {
             gameInstance->gameOver = false;
-            gameInstance->isFirstFrameAfterReset = true;  // Set flag to ignore first input
-            gameInstance->InitGame();  // Reset the entire game state
+            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
+            return;  // Return early to prevent the input from being processed
         }
     }
     else if (gameInstance->lostLife)
@@ -188,7 +188,7 @@ void GameLoop()
     }
     else if (gameInstance->isFirstStartup)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 200), 1000, 400 }, 0.76f, 20, BLACK);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 200), 1000, 450 }, 0.76f, 20, BLACK);
         DrawText("Welcome to Space Invaders!", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 150, 40, yellow);
         DrawText("Controls:", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 80, 30, yellow);
         DrawText("Arrow Keys or WASD - Move spaceship", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 30, 25, yellow);
@@ -202,7 +202,8 @@ void GameLoop()
             IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
             IsKeyPressed(KEY_A) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_W) || IsKeyPressed(KEY_S)) {
             gameInstance->isFirstStartup = false;
-            gameInstance->isFirstFrameAfterReset = true;  // Set flag to ignore first input
+            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
+            return;  // Return early to prevent the input from being processed
         }
     }
 

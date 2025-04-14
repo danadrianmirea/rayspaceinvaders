@@ -13,6 +13,7 @@ Game::Game()
 #endif
     InitGame();
     isFirstStartup = true;  // Initialize first startup state
+    startupDelayTimer = 0.0f;  // Initialize startup delay timer
 }
 
 Game::~Game()
@@ -125,6 +126,17 @@ void Game::Update()
     bool running = (paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false && lostLife == false && isFirstStartup == false);
     if (running)
     {
+        // Handle startup delay
+        if (startupDelayTimer > 0.0f)
+        {
+            startupDelayTimer -= GetFrameTime();
+            if (startupDelayTimer <= 0.0f)
+            {
+                InitGame();  // Initialize game after delay expires
+            }
+            return;  // Skip game logic during startup delay
+        }
+
         double currentTime = GetTime();
         {
             if (currentTime - timeLastMysteryShipSpawn > mysteryShipSpawnInterval)
@@ -167,16 +179,8 @@ void Game::Update()
             lostLife = false;
             lostLifeTimer = 0.0f;  // Reset timer
             spaceship.Reset();  // Reset player position
-        }
-    }
-    else if (gameOver)
-    {
-        // Check for space key to restart the game
-        if (IsKeyPressed(KEY_SPACE))
-        {
-            gameOver = false;
-            isFirstFrameAfterReset = true;  // Reset this flag when restarting
-            InitGame();  // Reset the entire game state
+            spaceship.lasers.clear();  // Clear player lasers
+            alienLasers.clear();  // Clear alien lasers
         }
     }
 }

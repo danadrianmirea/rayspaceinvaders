@@ -191,11 +191,12 @@ void GameLoop()
         DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 200), 1000, 400 }, 0.76f, 20, BLACK);
         DrawText("Welcome to Space Invaders!", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 150, 40, yellow);
         DrawText("Controls:", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 80, 30, yellow);
-        DrawText("Left/Right Arrow Keys - Move spaceship", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 30, 25, yellow);
-        DrawText("Space - Shoot", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 10, 25, yellow);
-        DrawText("P - Pause game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 50, 25, yellow);
-        DrawText("ESC - Exit game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 90, 25, yellow);
-        DrawText("Press any key to start the game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 150, 30, yellow);
+        DrawText("Arrow Keys or WASD - Move spaceship", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 30, 25, yellow);
+        DrawText("Shift - Speed boost while moving", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 10, 25, yellow);
+        DrawText("Space or W - Shoot", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 50, 25, yellow);
+        DrawText("P - Pause game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 90, 25, yellow);
+        DrawText("ESC - Exit game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 130, 25, yellow);
+        DrawText("Press any key to start the game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 190, 30, yellow);
         
         if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
             IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||

@@ -32,7 +32,7 @@ private:
     float laserFireTimer;
     const float laserFireInterval = 0.700f;
 
-    const int cShipSpeed = 2;
+    const int cShipSpeed = 1.4;
     const int cLaserSpeed = 4;
 
     Sound laserSound;

@@ -36,6 +36,8 @@ void Game::InitGame()
     paused = false;
     lostWindowFocus = false;
     isInExitMenu = false;
+    lostLife = false;
+    lostLifeTimer = 0.0f;  // Initialize debuff timer
     alienUpdateTimer = 0.0f;
     alienUpdateTimerExpired = false;
     lives = 3;
@@ -79,7 +81,7 @@ void Game::Draw()
 
 void Game::Update()
 {
-    bool running = (paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false);
+    bool running = (paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false && lostLife == false);
     if (running)
     {
         double currentTime = GetTime();
@@ -106,6 +108,19 @@ void Game::Update()
         DeleteInactiveAlienLasers();
 
         CheckForCollisions();
+    }
+    else if (lostLife)
+    {
+        // Update debuff timer
+        lostLifeTimer += GetFrameTime();
+        
+        // Only allow continuing after 300ms debuff
+        if (lostLifeTimer >= 0.3f && GetKeyPressed() != 0)
+        {
+            lostLife = false;
+            lostLifeTimer = 0.0f;  // Reset timer
+            spaceship.Reset();  // Reset player position
+        }
     }
 }
 
@@ -257,11 +272,12 @@ void Game::CheckForCollisions()
             laser.active = false;
             lives--;
             PlaySound(explosionSound);
+            lostLife = true;
+            lostLifeTimer = 0.0f;  // Reset debuff timer when hit
             if (lives == 0)
             {
                 GameOver();
             }
-
             break;
         }
         if (laser.active == false)

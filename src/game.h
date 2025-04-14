@@ -33,6 +33,8 @@ public:
     bool paused;
     bool lostWindowFocus;
     bool gameOver;
+    bool lostLife;
+    float lostLifeTimer;  // Timer for debuff after losing a life
     int lives;
     int score;
     int highScore;

@@ -172,6 +172,11 @@ void GameLoop()
         DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
         DrawText("Game over, press SPACE to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
     }
+    else if (gameInstance->lostLife)
+    {
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+        DrawText("You lost a life! Press any key to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+    }
 
     EndDrawing();
 }

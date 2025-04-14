@@ -1,3 +1,75 @@
+# Build directories
+build/
+out/
+bin/
+obj/
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+*.idx
+*.pdb
+*.idb
+*.ilk
+*.dSYM/
+*.dSYM.zip
+
+# Executables
 *.exe
-*.dsym
+*.app
 main
+spaceinvaders
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+*.ninja
+.ninja_deps
+.ninja_log
+
+# IDE specific files
+.vscode/
+*.code-workspace
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.suo
+*.user
+*.userosscache
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.VC.opendb
+
+# Debug files
+*.pdb
+*.idb
+*.ilk
+*.dSYM/
+*.dSYM.zip
+
+# Dependency directories
+deps/
+external/
+
+# Temporary files
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+*.temp
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Raylib specific
+highscore.txt

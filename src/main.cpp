@@ -116,7 +116,8 @@ void GameLoop()
     BeginTextureMode(gameTarget);
 
     ClearBackground(grey);
-    DrawRectangleRoundedLines({ 10, 10, 780, 780 }, 0.18f, 20, 2, yellow);
+    Rectangle border = { 10, 10, 780, 780 };
+    DrawRectangleRoundedLinesEx(border, 0.18f, 20, 2.0f, yellow);
 
     DrawLineEx({ 25, 730 }, { 775, 730 }, 3, yellow);
     DrawTextEx(gameFont, "LEVEL 01", { 570, 740 }, 34, 2, yellow);

@@ -34,6 +34,7 @@ private:
 
     const int cShipSpeed = 1.4;
     const int cLaserSpeed = 4;
+    const float speedBoostMultiplier = 2.0f;  // Speed multiplier when shift is pressed
 
     Sound laserSound;
 };

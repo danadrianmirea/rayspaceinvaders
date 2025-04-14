@@ -56,7 +56,12 @@ void Spaceship::Draw()
 
 void Spaceship::MoveLeft()
 {
-    position.x -= shipSpeed;
+    float currentSpeed = shipSpeed;
+    if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
+    {
+        currentSpeed *= speedBoostMultiplier;
+    }
+    position.x -= currentSpeed;
     if (position.x < frameOffsetLeft)
     {
         position.x = frameOffsetLeft;
@@ -65,7 +70,12 @@ void Spaceship::MoveLeft()
 
 void Spaceship::MoveRight()
 {
-    position.x += shipSpeed;
+    float currentSpeed = shipSpeed;
+    if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
+    {
+        currentSpeed *= speedBoostMultiplier;
+    }
+    position.x += currentSpeed;
     if (position.x > gameScreenWidth - image.width - frameOffsetRight)
     {
         position.x = gameScreenWidth - image.width - frameOffsetRight;

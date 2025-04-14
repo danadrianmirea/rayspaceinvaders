@@ -38,6 +38,7 @@ public:
     int lives;
     int score;
     int highScore;
+    int currentLevel;  // Track current level
     Music music;
     Sound explosionSound;
     
@@ -47,6 +48,7 @@ private:
     void CreateAliens();
     void MoveAliens(float speed);
     void MoveDownAliens(int distance);
+    void AdvanceLevel();  // Function to handle level progression
     std::vector<Obstacle> obstacles;
     std::vector<Alien> aliens;
     std::vector<Laser> alienLasers;

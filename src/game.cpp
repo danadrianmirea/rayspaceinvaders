@@ -26,8 +26,13 @@ Game::~Game()
 
 void Game::InitGame()
 {
-    CreateObstacles();
-    CreateAliens();
+    // Clear all existing game objects
+    obstacles.clear();
+    aliens.clear();
+    alienLasers.clear();
+    spaceship.lasers.clear();
+    
+    // Reset game state variables
     aliensDirection = 1;
     alienLaserSpeed = -3;
     alienShipSpeed = 0.4f;
@@ -37,25 +42,62 @@ void Game::InitGame()
     lostWindowFocus = false;
     isInExitMenu = false;
     lostLife = false;
-    lostLifeTimer = 0.0f;  // Initialize debuff timer
+    lostLifeTimer = 0.0f;
     alienUpdateTimer = 0.0f;
     alienUpdateTimerExpired = false;
     lives = 3;
     score = 0;
+    currentLevel = 1;  // Start at level 1
     highScore = LoadHighScoreFromFile();
     gameOver = false;
     timeLastMysteryShipSpawn = 0.0f;
     mysteryShipSpawnInterval = GetRandomValue(10, 20);
     isFirstFrameAfterReset = true;
+
+    // Reset spaceship position and state
+    spaceship.Reset();
+    
+    // Create new game objects
+    CreateObstacles();
+    CreateAliens();
+    
+    // Initialize player's fire rate
+    float baseFireRate = 0.350f;
+    float alienFireRate = baseFireRate * (1.0f / (1.05f * currentLevel));
+    float newFireRate = alienFireRate * 2.0f;  // Make player fire rate 50% slower
+    spaceship.SetFireRate(newFireRate);
 }
 
 void Game::Reset()
 {
+    // Store the current fire rate before resetting
+    float currentFireRate = spaceship.GetFireRate();
+    
     obstacles.clear();
     aliens.clear();
     alienLasers.clear();
     spaceship.Reset();
-    InitGame();
+    
+    // Don't call InitGame() here as it would reset the level and fire rate
+    // Instead, just recreate the game elements
+    CreateObstacles();
+    CreateAliens();
+    aliensDirection = 1;
+    aliensReadyToFire = false;
+    alienFireTimer = 0.0f;
+    paused = false;
+    lostWindowFocus = false;
+    isInExitMenu = false;
+    lostLife = false;
+    lostLifeTimer = 0.0f;
+    alienUpdateTimer = 0.0f;
+    alienUpdateTimerExpired = false;
+    timeLastMysteryShipSpawn = 0.0f;
+    mysteryShipSpawnInterval = GetRandomValue(10, 20);
+    isFirstFrameAfterReset = true;
+    
+    // Restore the previous fire rate
+    spaceship.SetFireRate(currentFireRate);
 }
 
 void Game::Draw()
@@ -108,6 +150,12 @@ void Game::Update()
         DeleteInactiveAlienLasers();
 
         CheckForCollisions();
+        
+        // Check if all aliens are defeated
+        if (aliens.empty())
+        {
+            AdvanceLevel();
+        }
     }
     else if (lostLife)
     {
@@ -120,6 +168,15 @@ void Game::Update()
             lostLife = false;
             lostLifeTimer = 0.0f;  // Reset timer
             spaceship.Reset();  // Reset player position
+        }
+    }
+    else if (gameOver)
+    {
+        // Check for space key to restart the game
+        if (IsKeyPressed(KEY_SPACE))
+        {
+            gameOver = false;
+            InitGame();  // Reset the entire game state
         }
     }
 }
@@ -184,11 +241,9 @@ void Game::CheckForCollisions()
     // Spaceship lasers
     for (auto &laser : spaceship.lasers)
     {
-        if (laser.active == false)
-        {
-            continue;
-        }
+        if (!laser.active) continue;
 
+        // Check alien collisions first
         auto it = aliens.begin();
         while (it != aliens.end())
         {
@@ -210,7 +265,6 @@ void Game::CheckForCollisions()
                 }
 
                 CheckForHighScore();
-
                 it = aliens.erase(it);
                 laser.active = false;
                 break;
@@ -220,11 +274,10 @@ void Game::CheckForCollisions()
                 ++it;
             }
         }
-        if (laser.active == false)
-        {
-            continue;
-        }
 
+        if (!laser.active) continue;
+
+        // Check obstacle collisions
         for (auto &obs : obstacles)
         {
             auto it = obs.blocks.begin();
@@ -241,16 +294,12 @@ void Game::CheckForCollisions()
                     ++it;
                 }
             }
-            if (laser.active == false)
-            {
-                break;
-            }
-        }
-        if (laser.active == false)
-        {
-            continue;
+            if (!laser.active) break;
         }
 
+        if (!laser.active) continue;
+
+        // Check mystery ship collision
         if (CheckCollisionRecs(mysteryShip.getRect(), laser.getRect()))
         {
             PlaySound(explosionSound);
@@ -461,4 +510,26 @@ void Game::MoveDownAliens(int distance)
     {
         alien.position.y += distance;
     }
+}
+
+void Game::AdvanceLevel()
+{
+    currentLevel++;
+    // Increase alien speed by 10% each level
+    alienShipSpeed *= 1.1f;
+    // Increase alien fire rate by 5% each level
+    alienLaserSpeed *= 1.05f;
+    
+    // Update player's fire rate to be 50% slower than aliens and scale with level
+    float baseFireRate = 0.350f;  // Base fire rate
+    float alienFireRate = baseFireRate * (1.0f / (1.05f * currentLevel));  // Calculate current alien fire rate
+    float newFireRate = alienFireRate * 2.0f;  // Make player fire rate 50% slower (multiply by 2.0)
+    spaceship.SetFireRate(newFireRate);
+    
+    // Clear existing aliens and create new ones
+    aliens.clear();
+    CreateAliens();
+    
+    // Reset alien movement direction
+    aliensDirection = 1;
 }

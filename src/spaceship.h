@@ -18,6 +18,8 @@ public:
     void MoveRight();
     void FireLaser();
     Rectangle getRect();
+    void SetFireRate(float rate);
+    float GetFireRate() const { return laserFireInterval; }
 
     std::vector<Laser> lasers;
     
@@ -30,11 +32,12 @@ private:
     int laserSpeed;
     bool readyToFire;
     float laserFireTimer;
-    const float laserFireInterval = 0.700f;
+    float laserFireInterval;
 
     const int cShipSpeed = 1.4;
     const int cLaserSpeed = 4;
     const float speedBoostMultiplier = 2.0f;  // Speed multiplier when shift is pressed
+    const float cDefaultFireRate = 0.350f;    // Default fire rate
 
     Sound laserSound;
 };

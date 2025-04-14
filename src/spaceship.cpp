@@ -28,6 +28,7 @@ void Spaceship::Reset()
     laserSpeed = cLaserSpeed;
     laserFireTimer = 0;
     readyToFire = false;
+    // Don't reset the fire rate here, it should be preserved
 }
 
 void Spaceship::Update()
@@ -116,4 +117,12 @@ void Spaceship::ReloadWeapon()
             laserFireTimer = 0.0f;
         }
     }
+}
+
+void Spaceship::SetFireRate(float rate)
+{
+    laserFireInterval = rate;
+    // Reset the timer to prevent any timing issues
+    laserFireTimer = 0;
+    readyToFire = true;
 }

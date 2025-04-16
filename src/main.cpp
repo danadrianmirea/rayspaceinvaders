@@ -13,6 +13,26 @@ bool fullscreen = true;
 const int borderH = 100;
 const int borderW = (int)(1920.0f / 1080.f * borderH);
 
+#define WEB_CANVAS_WIDTH 960
+#define WEB_CANVAS_HEIGHT 540
+
+// Wrapper functions for screen dimensions
+int GetGameScreenWidth() {
+#ifdef EMSCRIPTEN_BUILD
+    return WEB_CANVAS_WIDTH;
+#else
+    return GetScreenWidth();
+#endif
+}
+
+int GetGameScreenHeight() {
+#ifdef EMSCRIPTEN_BUILD
+    return WEB_CANVAS_HEIGHT;
+#else
+    return GetScreenHeight();
+#endif
+}
+
 std::string FormatWithLeadingZeroes(int number, int width)
 {
     std::string numberText = std::to_string(number);
@@ -38,6 +58,7 @@ Texture2D spaceshipImage;
 
 void UpdateWindow(Game& game, float scale)
 {
+#ifndef EMSCRIPTEN_BUILD
     if (WindowShouldClose() || (IsKeyPressed(KEY_ESCAPE) && exitWindowRequested == false))
     {
         exitWindowRequested = true;
@@ -60,12 +81,14 @@ void UpdateWindow(Game& game, float scale)
         // ToggleFullscreen();
         ToggleBorderlessWindowed();
     }
+#endif
 
     if (game.gameOver && IsKeyPressed(KEY_SPACE))
     {
         game.Reset();
     }
 
+#ifndef EMSCRIPTEN_BUILD
     if (exitWindowRequested)
     {
         if (IsKeyPressed(KEY_Y))
@@ -78,6 +101,7 @@ void UpdateWindow(Game& game, float scale)
             game.isInExitMenu = false;
         }
     }
+ #endif
 
     if (IsWindowFocused() == false)
     {
@@ -88,7 +112,11 @@ void UpdateWindow(Game& game, float scale)
         game.lostWindowFocus = false;
     }
 
-    if (exitWindowRequested == false && game.lostWindowFocus == false && game.gameOver == false && IsKeyPressed(KEY_P))
+#ifndef EMSCRIPTEN_BUILD
+    if (exitWindowRequested == false && game.lostWindowFocus == false && game.gameOver == false && IsKeyPressed(KEY_P))    
+#else
+    if (exitWindowRequested == false && game.lostWindowFocus == false && game.gameOver == false && ( IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE) ) )
+#endif
     {
         if (game.paused)
         {
@@ -108,7 +136,11 @@ void GameLoop()
     UpdateMusicStream(gameInstance->music);
 #endif
 
-    gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
+#ifndef EMSCRIPTEN_BUILD
+    // Only update scale for desktop builds
+    gameScale = MIN((float)GetGameScreenWidth() / gameScreenWidth, (float)GetGameScreenHeight() / gameScreenHeight);
+#endif
+
     UpdateWindow(*gameInstance, gameScale);
 
     gameInstance->Update();
@@ -146,7 +178,7 @@ void GameLoop()
 
     DrawTexturePro(gameTarget.texture, (Rectangle) { 0.0f, 0.0f, (float)gameTarget.texture.width, (float)-gameTarget.texture.height },
         (Rectangle) {
-        (GetScreenWidth() - ((float)gameScreenWidth * gameScale)) * 0.5f, (GetScreenHeight() - ((float)gameScreenHeight * gameScale)) * 0.5f,
+        (GetGameScreenWidth() - ((float)gameScreenWidth * gameScale)) * 0.5f, (GetGameScreenHeight() - ((float)gameScreenHeight * gameScale)) * 0.5f,
             (float)gameScreenWidth* gameScale, (float)gameScreenHeight* gameScale
     },
         (Vector2) {
@@ -155,23 +187,23 @@ void GameLoop()
 
     if (exitWindowRequested)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-        DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500), (float)(GetGameScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+        DrawText("Are you sure you want to exit? [Y/N]", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2, 40, yellow);
     }
     else if (gameInstance->paused)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-        DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500), (float)(GetGameScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+        DrawText("Game paused, press P to continue", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2, 40, yellow);
     }
     else if (gameInstance->lostWindowFocus)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-        DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500), (float)(GetGameScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+        DrawText("Game paused, focus window to continue", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2, 40, yellow);
     }
     else if (gameInstance->gameOver)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-        DrawText("Game over, press any key to play again", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500), (float)(GetGameScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+        DrawText("Game over, press any key to play again", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2, 40, yellow);
         
         if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
             IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
@@ -183,20 +215,20 @@ void GameLoop()
     }
     else if (gameInstance->lostLife)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
-        DrawText("You lost a life! Press any key to continue", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2, 40, yellow);
+        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500), (float)(GetGameScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+        DrawText("You lost a life! Press any key to continue", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2, 40, yellow);
     }
     else if (gameInstance->isFirstStartup)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500), (float)(GetScreenHeight() / 2 - 200), 1000, 450 }, 0.76f, 20, BLACK);
-        DrawText("Welcome to Space Invaders!", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 150, 40, yellow);
-        DrawText("Controls:", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 80, 30, yellow);
-        DrawText("Arrow Keys or WASD - Move spaceship", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 - 30, 25, yellow);
-        DrawText("Shift - Speed boost while moving", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 10, 25, yellow);
-        DrawText("Space or W - Shoot", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 50, 25, yellow);
-        DrawText("P - Pause game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 90, 25, yellow);
-        DrawText("ESC - Exit game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 130, 25, yellow);
-        DrawText("Press any key to start the game", GetScreenWidth() / 2 - 400, GetScreenHeight() / 2 + 190, 30, yellow);
+        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500), (float)(GetGameScreenHeight() / 2 - 200), 1000, 450 }, 0.76f, 20, BLACK);
+        DrawText("Welcome to Space Invaders!", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2 - 150, 40, yellow);
+        DrawText("Controls:", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2 - 80, 30, yellow);
+        DrawText("Arrow Keys or WASD - Move spaceship", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2 - 30, 25, yellow);
+        DrawText("Shift - Speed boost while moving", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2 + 10, 25, yellow);
+        DrawText("Space or W - Shoot", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2 + 50, 25, yellow);
+        DrawText("P - Pause game", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2 + 90, 25, yellow);
+        DrawText("ESC - Exit game", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2 + 130, 25, yellow);
+        DrawText("Press any key to start the game", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2 + 190, 30, yellow);
         
         if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
             IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
@@ -219,24 +251,25 @@ int main()
 
     gameFont = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
 
-    //  int display = GetCurrentMonitor();
-    //  int windowWidth = (int)(GetMonitorWidth(display));
-    //  int windowHeight = (int)(GetMonitorHeight(display));
-    //  SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);.
-
+#ifdef EMSCRIPTEN_BUILD
+    windowWidth = WEB_CANVAS_WIDTH;
+    windowHeight = WEB_CANVAS_HEIGHT;
+    fullscreen = false;
+    SetWindowSize(windowWidth, windowHeight);
+    gameScale = 0.7f;
+#else
     SetWindowSize(windowWidth - borderW, windowHeight - borderH);
-    // MaximizeWindow();
     SetWindowPosition(50, 50);
-    // ToggleFullscreen();
     ToggleBorderlessWindowed();
+    // Calculate scale for desktop build
+    gameScale = MIN((float)GetGameScreenWidth() / gameScreenWidth, (float)GetGameScreenHeight() / gameScreenHeight);
+#endif
 
     gameScreenWidth = gameScreenWidth + offset;
     gameScreenHeight = gameScreenHeight + 2 * offset;
     gameTarget = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
     SetTextureFilter(gameTarget.texture, TEXTURE_FILTER_BILINEAR); // Texture scale filter to use
     SetTargetFPS(144);
-
-    gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 
     gameInstance = new Game();
     spaceshipImage = LoadTexture("Graphics/spaceship.png");

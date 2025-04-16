@@ -1,4 +1,6 @@
 # Build directories
+web-build/
+web-build.zip
 build/
 out/
 bin/

@@ -28,13 +28,13 @@ private:
     void ReloadWeapon();
     Texture2D image;
     Vector2 position;
-    int shipSpeed;
+    float shipSpeed;
     int laserSpeed;
     bool readyToFire;
     float laserFireTimer;
     float laserFireInterval;
 
-    const int cShipSpeed = 1.4;
+    const float cShipSpeed = 1.4f;
     const int cLaserSpeed = 4;
     const float speedBoostMultiplier = 2.0f;  // Speed multiplier when shift is pressed
     const float cDefaultFireRate = 0.350f;    // Default fire rate

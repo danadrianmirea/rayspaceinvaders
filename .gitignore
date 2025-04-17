@@ -18,6 +18,7 @@ obj/
 *.ilk
 *.dSYM/
 *.dSYM.zip
+*.zip
 
 # Executables
 *.exe

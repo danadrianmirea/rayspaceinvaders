@@ -193,7 +193,11 @@ void GameLoop()
     else if (gameInstance->paused)
     {
         DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500), (float)(GetGameScreenHeight() / 2 - 40), 1000, 120 }, 0.76f, 20, BLACK);
+#ifdef EMSCRIPTEN_BUILD
+        DrawText("Game paused, press P or ESC to continue", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2, 40, yellow);
+#else
         DrawText("Game paused, press P to continue", GetGameScreenWidth() / 2 - 400, GetGameScreenHeight() / 2, 40, yellow);
+#endif
     }
     else if (gameInstance->lostWindowFocus)
     {

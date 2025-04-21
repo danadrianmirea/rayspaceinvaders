@@ -22,7 +22,7 @@ Spaceship::~Spaceship()
 void Spaceship::Reset()
 {
     position.x = (gameScreenWidth - image.width) / 2;
-    position.y = gameScreenHeight - image.height - 100;
+    position.y = gameScreenHeight - image.height - 150;
     lasers.clear();
     shipSpeed = cShipSpeed;
     laserSpeed = cLaserSpeed;

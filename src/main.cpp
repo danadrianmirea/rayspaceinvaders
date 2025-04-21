@@ -41,7 +41,7 @@ RenderTexture2D gameTarget;
 float gameScale = 1.0f;
 Texture2D spaceshipImage;
 
-void UpdateWindow(Game& game, float scale)
+void UpdateWindow(Game& game)
 {
 #ifndef EMSCRIPTEN_BUILD
     if (WindowShouldClose() || (IsKeyPressed(KEY_ESCAPE) && exitWindowRequested == false))
@@ -129,7 +129,31 @@ void GameLoop()
 
     gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 
-    UpdateWindow(*gameInstance, gameScale);
+    UpdateWindow(*gameInstance);
+
+#ifdef EMSCRIPTEN_BUILD
+    // Update mobile control positions when screen size changes
+    if (Game::isMobile)
+    {
+        const float buttonWidth = 80.0f;
+        const float buttonHeight = 80.0f;
+        const float buttonMargin = 100.0f;
+        const int controlsY = gameScreenHeight;
+        const float buttonY = controlsY - buttonHeight - 30.0f;
+
+        // Fire button on left side (red circle)
+        gameInstance->fireButtonRadius = 40.0f;
+        gameInstance->fireButtonPos = (Vector2){ 
+            gameInstance->fireButtonRadius + buttonMargin, 
+            controlsY - gameInstance->fireButtonRadius - 30.0f
+        };
+        
+        // Calculate positions based on screen width to ensure they're visible
+        float rightSideX = gameScreenWidth - 2*buttonWidth - buttonMargin - buttonMargin;
+        gameInstance->leftButtonRect = (Rectangle){ rightSideX, buttonY, buttonWidth, buttonHeight };
+        gameInstance->rightButtonRect = (Rectangle){ rightSideX + buttonWidth + buttonMargin, buttonY, buttonWidth, buttonHeight };
+    }
+#endif
 
     gameInstance->Update();
 
@@ -139,9 +163,7 @@ void GameLoop()
     Rectangle border = { 10, 10, 780, 780 };
     DrawRectangleRoundedLinesEx(border, 0.18f, 20, 2.0f * gameScale, yellow);
 
-    DrawLineEx({ 25, 730 }, { 775, 730 }, 3 * gameScale, yellow);
-    std::string levelText = "LEVEL " + FormatWithLeadingZeroes(gameInstance->currentLevel, 2);
-    DrawTextEx(gameFont, levelText.c_str(), { 570, 740 }, 34 * gameScale, 2 * gameScale, yellow);
+    DrawLineEx({ 25, 730 - 50 }, { 775, 730 - 50 }, 3 * gameScale, yellow);
 
     DrawTextEx(gameFont, "SCORE", { 50, 15 }, 34 * gameScale, 2 * gameScale, yellow);
     std::string scoreText = FormatWithLeadingZeroes(gameInstance->score, 7);
@@ -151,12 +173,14 @@ void GameLoop()
     std::string highScoreText = FormatWithLeadingZeroes(gameInstance->highScore, 7);
     DrawTextEx(gameFont, highScoreText.c_str(), { 570, 40 }, 34 * gameScale, 2 * gameScale, yellow);
 
-    float x = 50.0f;
+    float x = (float)gameScreenWidth/2 - 120;
+
+    std::string levelText = "LEVEL " + FormatWithLeadingZeroes(gameInstance->currentLevel, 2);
+    DrawTextEx(gameFont, levelText.c_str(), { x, 740 }, 34 * gameScale, 2 * gameScale, yellow);
+
     for (int i = 0; i < gameInstance->lives; i++)
     {
-        // Scale the spaceship icon based on gameScale
-        Vector2 scale = { gameScale, gameScale };
-        DrawTextureEx(spaceshipImage, { x, 745 }, 0.0f, gameScale, WHITE);
+        DrawTextureEx(spaceshipImage, { x, 745 - 50 }, 0.0f, gameScale, WHITE);
         x += 50 * gameScale;
     }
 
@@ -239,8 +263,8 @@ void GameLoop()
         {
             // Mobile-specific controls text
             DrawText("Controls:", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 80 * gameScale, 30 * gameScale, yellow);
-            DrawText("Tap - Shoot", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 30 * gameScale, 25 * gameScale, yellow);
-            DrawText("Touch and Hold - Move spaceship", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 10 * gameScale, 25 * gameScale, yellow);
+            DrawText("Yellow Circle (Left) - Shoot", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 30 * gameScale, 25 * gameScale, yellow);
+            DrawText("Yellow Buttons (Right) - Move ship", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 10 * gameScale, 25 * gameScale, yellow);
             DrawText("Tap anywhere to start the game", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 90 * gameScale, 30 * gameScale, yellow);
         }
         else
@@ -317,9 +341,7 @@ int main()
 
 #ifdef EMSCRIPTEN_BUILD
     // Use emscripten_set_main_loop for Emscripten builds
-    // Adjust the gameScale if on a mobile device
     if (Game::isMobile) {
-        // Use a smaller scale for mobile devices to ensure everything fits on screen
         gameScale = 1.0f;
     }
     emscripten_set_main_loop(GameLoop, 0, 1);

@@ -33,6 +33,134 @@ void Game::DetectMobileDevice()
 #endif
 }
 
+#ifdef EMSCRIPTEN_BUILD
+bool Game::IsPointInCircle(Vector2 point, Vector2 center, float radius)
+{
+    float dx = point.x - center.x;
+    float dy = point.y - center.y;
+    return (dx * dx + dy * dy) <= (radius * radius);
+}
+
+bool Game::IsPointInRectangle(Vector2 point, Rectangle rect)
+{
+    return (point.x >= rect.x && point.x <= (rect.x + rect.width) &&
+            point.y >= rect.y && point.y <= (rect.y + rect.height));
+}
+
+void Game::DrawMobileControls()
+{
+    if (!isMobile || paused || lostWindowFocus || isInExitMenu || gameOver || lostLife || isFirstStartup)
+        return;
+    
+    // Draw fire button (red circle)
+    DrawCircleV(fireButtonPos, fireButtonRadius, 
+                fireButtonPressed ? RED : YELLOW);
+    DrawCircleLines(fireButtonPos.x, fireButtonPos.y, fireButtonRadius, MAROON);
+    
+    // Draw movement buttons (rectangles)
+    DrawRectangleRec(leftButtonRect, leftButtonPressed ? RED : YELLOW);
+    DrawRectangleLinesEx(leftButtonRect, 2, BLACK);
+    
+    // Draw left arrow triangle (pointing left)
+    DrawTriangle(
+        (Vector2){leftButtonRect.x + leftButtonRect.width * 0.3f, leftButtonRect.y + leftButtonRect.height * 0.5f},  // Point (left)
+        (Vector2){leftButtonRect.x + leftButtonRect.width * 0.7f, leftButtonRect.y + leftButtonRect.height * 0.3f},  // Top
+        (Vector2){leftButtonRect.x + leftButtonRect.width * 0.7f, leftButtonRect.y + leftButtonRect.height * 0.7f},  // Bottom
+        RED
+    );
+    
+    DrawRectangleRec(rightButtonRect, rightButtonPressed ? RED : YELLOW);
+    DrawRectangleLinesEx(rightButtonRect, 2, BLACK);
+    
+    // Draw right arrow triangle (pointing right)
+    DrawTriangle(
+        (Vector2){rightButtonRect.x + rightButtonRect.width * 0.7f, rightButtonRect.y + rightButtonRect.height * 0.5f},  // Point (right)
+        (Vector2){rightButtonRect.x + rightButtonRect.width * 0.3f, rightButtonRect.y + rightButtonRect.height * 0.3f},  // Top
+        (Vector2){rightButtonRect.x + rightButtonRect.width * 0.3f, rightButtonRect.y + rightButtonRect.height * 0.7f},  // Bottom
+        BLACK
+    );
+}
+
+void Game::HandleMobileControls()
+{
+    if (!isMobile) return;
+    
+    // Reset button states
+    leftButtonPressed = false;
+    rightButtonPressed = false;
+    fireButtonPressed = false;
+    
+    // Check for touches
+    if (GetTouchPointCount() > 0)
+    {
+        for (int i = 0; i < GetTouchPointCount(); i++)
+        {
+            // Get touch position in screen space
+            Vector2 touchPos = GetTouchPosition(i);
+            float collisionRadius = 50.0f;
+            float extraHeight = 100;            
+            
+            // Convert touch position from screen space to game screen space
+            // First, subtract the game screen offset to get relative position
+            float gameScreenX = (GetScreenWidth() - gameScreenWidth * gameScale) * 0.5f;
+            float gameScreenY = (GetScreenHeight() - gameScreenHeight * gameScale) * 0.5f;
+            
+            // Then convert to game screen coordinates
+            Vector2 gameSpaceTouchPos = {
+                (touchPos.x - gameScreenX) / gameScale,
+                (touchPos.y - gameScreenY) / gameScale
+            };
+            // Create a collision rectangle centered on the fire button
+            Rectangle scaledFireButtonRect = {
+                fireButtonPos.x - collisionRadius*3,
+                fireButtonPos.y - collisionRadius*3 - extraHeight,
+                collisionRadius * 6,
+                collisionRadius * 6 + extraHeight
+            };
+
+ 
+
+            // Check fire button
+            if (IsPointInRectangle(gameSpaceTouchPos, scaledFireButtonRect))
+            {
+                fireButtonPressed = true;
+                spaceship.FireLaser();
+            }
+
+      
+            
+            Rectangle scaledLeftButtonRect = {
+                leftButtonRect.x - collisionRadius,
+                leftButtonRect.y - collisionRadius - extraHeight,
+                leftButtonRect.width + 2 * collisionRadius,
+                leftButtonRect.height + 2 * collisionRadius + extraHeight
+            };
+              
+            Rectangle scaledRightButtonRect = {
+                rightButtonRect.x - collisionRadius,
+                rightButtonRect.y - collisionRadius - extraHeight,
+                rightButtonRect.width + 2 * collisionRadius,
+                rightButtonRect.height + 2 * collisionRadius + extraHeight
+            };
+
+
+            // Check movement buttons
+            if (IsPointInRectangle(gameSpaceTouchPos, scaledLeftButtonRect))
+            {
+                leftButtonPressed = true;
+                spaceship.MoveLeft();
+            }
+
+            if (IsPointInRectangle(gameSpaceTouchPos, scaledRightButtonRect))
+            {
+                rightButtonPressed = true;
+                spaceship.MoveRight();
+            }
+        }
+    }
+}
+#endif
+
 Game::Game()
 {
     explosionSound = LoadSound("Sounds/explosion.ogg");
@@ -42,7 +170,7 @@ Game::Game()
 #endif
     // Detect if we're on a mobile device
     DetectMobileDevice();
-    
+
     InitGame();
     isFirstStartup = true;  // Initialize first startup state
     startupDelayTimer = 0.0f;  // Initialize startup delay timer
@@ -152,6 +280,10 @@ void Game::Draw()
     {
         alienLaser.Draw();
     }
+
+#ifdef EMSCRIPTEN_BUILD
+    DrawMobileControls();
+#endif
 }
 
 void Game::Update()
@@ -247,35 +379,8 @@ void Game::HandleInput()
 #ifdef EMSCRIPTEN_BUILD
     if (isMobile)
     {
-        // Mobile-specific input handling
-        if (IsGestureDetected(GESTURE_TAP))
-        {
-            // Fire laser on tap
-            spaceship.FireLaser();
-        }
-
-        if (IsGestureDetected(GESTURE_HOLD) || IsGestureDetected(GESTURE_DRAG))
-        {
-            // Move spaceship based on touch position
-            Vector2 touchPos = GetTouchPosition(0);
-            
-            // Convert touch position to game coordinates
-            float gameX = (touchPos.x - (GetScreenWidth() - (gameScreenWidth * gameScale)) * 0.5f) / gameScale;
-            
-            // Calculate the center of the spaceship
-            float spaceshipWidth = spaceship.getRect().width / gameScale;
-            float spaceshipCenterX = spaceship.getRect().x + (spaceshipWidth / 2.0f);
-            
-            // Move left or right based on the touch position relative to the spaceship
-            if (gameX < spaceshipCenterX - 10)
-            {
-                spaceship.MoveLeft();
-            }
-            else if (gameX > spaceshipCenterX + 10)
-            {
-                spaceship.MoveRight();
-            }
-        }
+        // Use dedicated mobile controls instead of gesture detection
+        HandleMobileControls();
     }
     else
     {
@@ -530,7 +635,7 @@ void Game::CreateObstacles()
     for (int i = 0; i < 4; i++)
     {
         float offsetX = (i + 1) * gap + i * obstacleWidth;
-        obstacles.push_back(Obstacle({offsetX, float(gameScreenHeight - 200)}));
+        obstacles.push_back(Obstacle({offsetX, float(gameScreenHeight - 250)}));
     }
 }
 

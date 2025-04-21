@@ -29,6 +29,23 @@ public:
     void SaveHighScoreToFile();
     int LoadHighScoreFromFile();
 
+    // Mobile controls
+#ifdef EMSCRIPTEN_BUILD
+    void DrawMobileControls();
+    void HandleMobileControls();
+    bool IsPointInCircle(Vector2 point, Vector2 center, float radius);
+    bool IsPointInRectangle(Vector2 point, Rectangle rect);
+    
+    // Touch control areas
+    Rectangle leftButtonRect;
+    Rectangle rightButtonRect;
+    Vector2 fireButtonPos;
+    float fireButtonRadius;
+    bool leftButtonPressed;
+    bool rightButtonPressed;
+    bool fireButtonPressed;
+#endif
+
     // Method to detect if running on a mobile device
     static void DetectMobileDevice();
     

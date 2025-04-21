@@ -136,10 +136,7 @@ void GameLoop()
     UpdateMusicStream(gameInstance->music);
 #endif
 
-#ifndef EMSCRIPTEN_BUILD
-    // Only update scale for desktop builds
     gameScale = MIN((float)GetGameScreenWidth() / gameScreenWidth, (float)GetGameScreenHeight() / gameScreenHeight);
-#endif
 
     UpdateWindow(*gameInstance, gameScale);
 

@@ -25,6 +25,9 @@ emcc src/*.cpp -o web-build/index.html \
 if [ $? -eq 0 ]; then
   echo "Build succeeded, creating web-build.zip..."
   powershell -Command "Compress-Archive -Path web-build\* -DestinationPath web-build.zip -Force"
+  echo "Starting local server..."
+  cd web-build
+  python -m http.server 8000
 else
   echo "Build failed, not creating zip."
 fi

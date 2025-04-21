@@ -68,9 +68,15 @@ void UpdateWindow(Game& game, float scale)
     }
 #endif
 
+#ifdef EMSCRIPTEN_BUILD
+    if (game.gameOver && (IsKeyPressed(KEY_SPACE) || (Game::isMobile && IsGestureDetected(GESTURE_TAP))))
+#else
     if (game.gameOver && IsKeyPressed(KEY_SPACE))
+#endif
     {
         game.Reset();
+        game.gameOver = false;  // Explicitly set gameOver to false
+        game.startupDelayTimer = 0.1f;  // Set a short delay before input is processed again
     }
 
 #ifndef EMSCRIPTEN_BUILD
@@ -201,20 +207,14 @@ void GameLoop()
         }
 #endif
         
-        if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
+        // Handle key input for non-space keys (space and tap are handled in UpdateWindow)
+        if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
             IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
             IsKeyPressed(KEY_A) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_W) || IsKeyPressed(KEY_S)) {
-            gameInstance->gameOver = false;
+            gameInstance->Reset();
             gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
             return;  // Return early to prevent the input from being processed
         }
-#ifdef EMSCRIPTEN_BUILD
-        if (Game::isMobile && IsGestureDetected(GESTURE_TAP)) {
-            gameInstance->gameOver = false;
-            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
-            return;  // Return early to prevent the input from being processed
-        }
-#endif
     }
     else if (gameInstance->lostLife)
     {

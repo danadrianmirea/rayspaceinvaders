@@ -127,6 +127,7 @@ void Game::Reset()
     timeLastMysteryShipSpawn = 0.0f;
     mysteryShipSpawnInterval = GetRandomValue(10, 20);
     isFirstFrameAfterReset = true;
+    gameOver = false;  // Reset the game over flag
     
     // Restore the previous fire rate
     spaceship.SetFireRate(currentFireRate);

@@ -1,4 +1,3 @@
-
 #include "globals.h"
 #include "laser.h"
 
@@ -26,11 +25,11 @@ void Laser::Draw()
 {
     if (active)
     {
-        DrawRectangle(position.x, position.y, laserWidth, laserHeight, laserColor);
+        DrawRectangle(position.x, position.y, laserWidth * gameScale, laserHeight * gameScale, laserColor);
     }
 }
 
 Rectangle Laser::getRect()
 {
-    return {position.x, position.y, 4.0f, 4.0f};
+    return {position.x, position.y, 4.0f * gameScale, 4.0f * gameScale};
 }

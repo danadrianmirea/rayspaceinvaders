@@ -1,4 +1,5 @@
 #include "alien.h"
+#include "globals.h"
 
 Texture2D Alien::alienImages[3] = {};
 
@@ -34,7 +35,7 @@ void Alien::Update(float speed, int direction)
 
 void Alien::Draw()
 {
-    DrawTextureV(alienImages[type-1], position, WHITE);
+    DrawTextureEx(alienImages[type-1], position, 0.0f, gameScale*0.8, WHITE);
 }
 
 int Alien::GetType()
@@ -52,5 +53,5 @@ void Alien::UnloadImages()
 
 Rectangle Alien::getRect()
 {
-    return {position.x, position.y, (float)(alienImages[type-1].width), (float)(alienImages[type-1].height)};
+    return {position.x, position.y, (float)(alienImages[type-1].width) * gameScale, (float)(alienImages[type-1].height) * gameScale};
 }

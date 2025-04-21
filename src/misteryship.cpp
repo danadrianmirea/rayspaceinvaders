@@ -34,7 +34,7 @@ Rectangle MysteryShip::getRect()
 {
     if(alive)
     {
-        return {position.x, position.y, (float)image.width, (float)image.height};
+        return {position.x, position.y, (float)image.width * gameScale*0.8, (float)image.height * gameScale*0.8};
     }
     else
     {
@@ -59,6 +59,6 @@ void MysteryShip::Draw()
 {
     if(alive)
     {
-        DrawTextureV(image, position, WHITE);
+        DrawTextureEx(image, position, 0.0f, gameScale, WHITE);
     }
 }

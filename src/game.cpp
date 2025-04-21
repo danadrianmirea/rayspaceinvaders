@@ -4,6 +4,35 @@
 
 #include <iostream>
 
+#ifdef EMSCRIPTEN_BUILD
+#include <emscripten.h>
+#endif
+
+// Initialize static variable
+bool Game::isMobile = false;
+
+// Implement the mobile detection method
+void Game::DetectMobileDevice()
+{
+#ifdef EMSCRIPTEN_BUILD
+    // Use Emscripten's JavaScript evaluation to check if the device is mobile
+    EM_ASM(
+        var isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        // Store the result in Module so we can access it from C++
+        Module.isMobileDevice = isMobileDevice;
+    );
+    
+    // Get the result from JavaScript
+    isMobile = EM_ASM_INT({
+        return Module.isMobileDevice ? 1 : 0;
+    });
+    
+    std::cout << "Running on " << (isMobile ? "mobile device" : "desktop browser") << std::endl;
+#else
+    isMobile = false;
+#endif
+}
+
 Game::Game()
 {
     explosionSound = LoadSound("Sounds/explosion.ogg");
@@ -11,6 +40,9 @@ Game::Game()
     music = LoadMusicStream("Sounds/music.ogg");
     PlayMusicStream(music);
 #endif
+    // Detect if we're on a mobile device
+    DetectMobileDevice();
+    
     InitGame();
     isFirstStartup = true;  // Initialize first startup state
     startupDelayTimer = 0.0f;  // Initialize startup delay timer
@@ -198,30 +230,70 @@ void Game::HandleInput()
     if (isFirstFrameAfterReset)
     {
         isFirstFrameAfterReset = false;
-        return;
+        return;  // Skip input on the first frame
     }
-
+    
     // Don't process input if game is not running
     if (paused || lostWindowFocus || isInExitMenu || gameOver || lostLife || isFirstStartup)
     {
         return;
     }
 
-    // Movement controls (both arrow keys and WASD)
-    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
+#ifdef EMSCRIPTEN_BUILD
+    if (isMobile)
     {
-        spaceship.MoveLeft();
-    }
-    else if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
-    {
-        spaceship.MoveRight();
-    }
+        // Mobile-specific input handling
+        if (IsGestureDetected(GESTURE_TAP))
+        {
+            // Fire laser on tap
+            spaceship.FireLaser();
+        }
 
-    // Fire control (both space and W)
-    if (IsKeyDown(KEY_SPACE) || IsKeyDown(KEY_W))
-    {
-        spaceship.FireLaser();
+        if (IsGestureDetected(GESTURE_HOLD) || IsGestureDetected(GESTURE_DRAG))
+        {
+            // Move spaceship based on touch position
+            Vector2 touchPos = GetTouchPosition(0);
+            
+            // Convert touch position to game coordinates
+            float gameX = (touchPos.x - (GetScreenWidth() - (gameScreenWidth * gameScale)) * 0.5f) / gameScale;
+            
+            // Calculate the center of the spaceship
+            float spaceshipWidth = spaceship.getRect().width / gameScale;
+            float spaceshipCenterX = spaceship.getRect().x + (spaceshipWidth / 2.0f);
+            
+            // Move left or right based on the touch position relative to the spaceship
+            if (gameX < spaceshipCenterX - 10)
+            {
+                spaceship.MoveLeft();
+            }
+            else if (gameX > spaceshipCenterX + 10)
+            {
+                spaceship.MoveRight();
+            }
+        }
     }
+    else
+    {
+        // Regular desktop/browser controls
+#endif
+        // Movement controls (both arrow keys and WASD)
+        if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
+        {
+            spaceship.MoveLeft();
+        }
+        if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
+        {
+            spaceship.MoveRight();
+        }
+        
+        // Fire control (both space and W)
+        if (IsKeyDown(KEY_SPACE) || IsKeyDown(KEY_W))
+        {
+            spaceship.FireLaser();
+        }
+#ifdef EMSCRIPTEN_BUILD
+    }
+#endif
 }
 
 void Game::AlienShootLaser()

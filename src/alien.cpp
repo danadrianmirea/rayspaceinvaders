@@ -35,7 +35,7 @@ void Alien::Update(float speed, int direction)
 
 void Alien::Draw()
 {
-    DrawTextureEx(alienImages[type-1], position, 0.0f, gameScale*0.8, WHITE);
+    DrawTextureEx(alienImages[type-1], position, 0.0f, 1.0f, WHITE);
 }
 
 int Alien::GetType()
@@ -53,5 +53,5 @@ void Alien::UnloadImages()
 
 Rectangle Alien::getRect()
 {
-    return {position.x, position.y, (float)(alienImages[type-1].width) * gameScale, (float)(alienImages[type-1].height) * gameScale};
+    return {position.x, position.y, (float)(alienImages[type-1].width) * 1.0f, (float)(alienImages[type-1].height) * 1.0f};
 }

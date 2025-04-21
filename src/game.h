@@ -29,6 +29,12 @@ public:
     void SaveHighScoreToFile();
     int LoadHighScoreFromFile();
 
+    // Method to detect if running on a mobile device
+    static void DetectMobileDevice();
+    
+    // Static variable to indicate if we're on a mobile device
+    static bool isMobile;
+
     bool isInExitMenu;
     bool paused;
     bool lostWindowFocus;

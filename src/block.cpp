@@ -11,7 +11,7 @@ Block::Block(Vector2 pos)
 
 void Block::Draw()
 {
-    DrawRectangle(position.x, position.y, blockWidth * gameScale, blockWidth * gameScale, blockColor);
+    DrawRectangle(position.x, position.y, blockWidth * 1.0f, blockWidth * 1.0f, blockColor);
 }
 
 Rectangle Block::getRect()
@@ -19,7 +19,7 @@ Rectangle Block::getRect()
     Rectangle rect;
     rect.x = position.x;
     rect.y = position.y;
-    rect.width = 3 * gameScale;
-    rect.height = 3 * gameScale;
+    rect.width = 3 * 1.0f;
+    rect.height = 3 * 1.0f;
     return rect;
 }

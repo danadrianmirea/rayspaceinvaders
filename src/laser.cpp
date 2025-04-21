@@ -25,11 +25,11 @@ void Laser::Draw()
 {
     if (active)
     {
-        DrawRectangle(position.x, position.y, laserWidth * gameScale, laserHeight * gameScale, laserColor);
+        DrawRectangle(position.x, position.y, laserWidth * 1.0f, laserHeight * 1.0f, laserColor);
     }
 }
 
 Rectangle Laser::getRect()
 {
-    return {position.x, position.y, 4.0f * gameScale, 4.0f * gameScale};
+    return {position.x, position.y, 4.0f * 1.0f, 4.0f * 1.0f};
 }

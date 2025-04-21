@@ -47,7 +47,7 @@ void Spaceship::Update()
 
 void Spaceship::Draw()
 {
-    DrawTextureEx(image, position, 0.0f, gameScale*0.8, WHITE);
+    DrawTextureEx(image, position, 0.0f, 1.0f, WHITE);
 
     for (auto &l : lasers)
     {
@@ -95,7 +95,7 @@ void Spaceship::FireLaser()
 
 Rectangle Spaceship::getRect()
 {
-    return {position.x, position.y, (float)image.width * gameScale, (float)image.height * gameScale};
+    return {position.x, position.y, (float)image.width * 1.0f, (float)image.height * 1.0f};
 }
 
 void Spaceship::DeleteInactiveLasers()

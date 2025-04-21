@@ -16,22 +16,7 @@ const int borderW = (int)(1920.0f / 1080.f * borderH);
 #define WEB_CANVAS_WIDTH 960
 #define WEB_CANVAS_HEIGHT 540
 
-// Wrapper functions for screen dimensions
-int GetGameScreenWidth() {
-#ifdef EMSCRIPTEN_BUILD
-    return WEB_CANVAS_WIDTH;
-#else
-    return GetScreenWidth();
-#endif
-}
-
-int GetGameScreenHeight() {
-#ifdef EMSCRIPTEN_BUILD
-    return WEB_CANVAS_HEIGHT;
-#else
-    return GetScreenHeight();
-#endif
-}
+// Wrapper functions for screen dimensions are no longer needed as we use GetScreenWidth directly
 
 std::string FormatWithLeadingZeroes(int number, int width)
 {
@@ -136,7 +121,7 @@ void GameLoop()
     UpdateMusicStream(gameInstance->music);
 #endif
 
-    gameScale = MIN((float)GetGameScreenWidth() / gameScreenWidth, (float)GetGameScreenHeight() / gameScreenHeight);
+    gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 
     UpdateWindow(*gameInstance, gameScale);
 
@@ -177,7 +162,7 @@ void GameLoop()
 
     DrawTexturePro(gameTarget.texture, (Rectangle) { 0.0f, 0.0f, (float)gameTarget.texture.width, (float)-gameTarget.texture.height },
         (Rectangle) {
-        (GetGameScreenWidth() - ((float)gameScreenWidth * gameScale)) * 0.5f, (GetGameScreenHeight() - ((float)gameScreenHeight * gameScale)) * 0.5f,
+        (GetScreenWidth() - ((float)gameScreenWidth * gameScale)) * 0.5f, (GetScreenHeight() - ((float)gameScreenHeight * gameScale)) * 0.5f,
             (float)gameScreenWidth* gameScale, (float)gameScreenHeight* gameScale
     },
         (Vector2) {
@@ -186,27 +171,35 @@ void GameLoop()
 
     if (exitWindowRequested)
     {
-        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500 * gameScale), (float)(GetGameScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
-        DrawText("Are you sure you want to exit? [Y/N]", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2, 40 * gameScale, yellow);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
+        DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
     }
     else if (gameInstance->paused)
     {
-        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500 * gameScale), (float)(GetGameScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
 #ifdef EMSCRIPTEN_BUILD
-        DrawText("Game paused, press P or ESC to continue", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2, 40 * gameScale, yellow);
+        DrawText("Game paused, press P or ESC to continue", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
 #else
-        DrawText("Game paused, press P to continue", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2, 40 * gameScale, yellow);
+        DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
 #endif
     }
     else if (gameInstance->lostWindowFocus)
     {
-        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500 * gameScale), (float)(GetGameScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
-        DrawText("Game paused, focus window to continue", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2, 40 * gameScale, yellow);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
+        DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
     }
     else if (gameInstance->gameOver)
     {
-        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500 * gameScale), (float)(GetGameScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
-        DrawText("Game over, press any key to play again", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2, 40 * gameScale, yellow);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
+#ifdef EMSCRIPTEN_BUILD
+        if (Game::isMobile) {
+            DrawText("Game over, tap to play again", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+        } else {
+#endif
+            DrawText("Game over, press any key to play again", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+#ifdef EMSCRIPTEN_BUILD
+        }
+#endif
         
         if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
             IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
@@ -215,23 +208,55 @@ void GameLoop()
             gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
             return;  // Return early to prevent the input from being processed
         }
+#ifdef EMSCRIPTEN_BUILD
+        if (Game::isMobile && IsGestureDetected(GESTURE_TAP)) {
+            gameInstance->gameOver = false;
+            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
+            return;  // Return early to prevent the input from being processed
+        }
+#endif
     }
     else if (gameInstance->lostLife)
     {
-        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500 * gameScale), (float)(GetGameScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
-        DrawText("You lost a life! Press any key to continue", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2, 40 * gameScale, yellow);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
+#ifdef EMSCRIPTEN_BUILD
+        if (Game::isMobile) {
+            DrawText("You lost a life! Tap to continue", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+        } else {
+#endif
+            DrawText("You lost a life! Press any key to continue", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+#ifdef EMSCRIPTEN_BUILD
+        }
+#endif
     }
     else if (gameInstance->isFirstStartup)
     {
-        DrawRectangleRounded({ (float)(GetGameScreenWidth() / 2 - 500 * gameScale), (float)(GetGameScreenHeight() / 2 - 200 * gameScale), 1000 * gameScale, 450 * gameScale }, 0.76f, 20 * gameScale, BLACK);
-        DrawText("Welcome to Space Invaders!", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2 - 150 * gameScale, 40 * gameScale, yellow);
-        DrawText("Controls:", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2 - 80 * gameScale, 30 * gameScale, yellow);
-        DrawText("Arrow Keys or WASD - Move spaceship", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2 - 30 * gameScale, 25 * gameScale, yellow);
-        DrawText("Shift - Speed boost while moving", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2 + 10 * gameScale, 25 * gameScale, yellow);
-        DrawText("Space or W - Shoot", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2 + 50 * gameScale, 25 * gameScale, yellow);
-        DrawText("P - Pause game", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2 + 90 * gameScale, 25 * gameScale, yellow);
-        DrawText("ESC - Exit game", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2 + 130 * gameScale, 25 * gameScale, yellow);
-        DrawText("Press any key to start the game", GetGameScreenWidth() / 2 - 400 * gameScale, GetGameScreenHeight() / 2 + 190 * gameScale, 30 * gameScale, yellow);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 200 * gameScale), 1000 * gameScale, 450 * gameScale }, 0.76f, 20 * gameScale, BLACK);
+        DrawText("Welcome to Space Invaders!", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 150 * gameScale, 40 * gameScale, yellow);
+
+#ifdef EMSCRIPTEN_BUILD
+        if (Game::isMobile)
+        {
+            // Mobile-specific controls text
+            DrawText("Controls:", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 80 * gameScale, 30 * gameScale, yellow);
+            DrawText("Tap - Shoot", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 30 * gameScale, 25 * gameScale, yellow);
+            DrawText("Touch and Hold - Move spaceship", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 10 * gameScale, 25 * gameScale, yellow);
+            DrawText("Tap anywhere to start the game", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 90 * gameScale, 30 * gameScale, yellow);
+        }
+        else
+        {
+            // Desktop/browser controls text
+#endif
+            DrawText("Controls:", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 80 * gameScale, 30 * gameScale, yellow);
+            DrawText("Arrow Keys or WASD - Move spaceship", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 30 * gameScale, 25 * gameScale, yellow);
+            DrawText("Shift - Speed boost while moving", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 10 * gameScale, 25 * gameScale, yellow);
+            DrawText("Space or W - Shoot", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 50 * gameScale, 25 * gameScale, yellow);
+            DrawText("P - Pause game", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 90 * gameScale, 25 * gameScale, yellow);
+            DrawText("ESC - Exit game", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 130 * gameScale, 25 * gameScale, yellow);
+            DrawText("Press any key to start the game", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 190 * gameScale, 30 * gameScale, yellow);
+#ifdef EMSCRIPTEN_BUILD
+        }
+#endif
         
         if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
             IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
@@ -240,6 +265,13 @@ void GameLoop()
             gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
             return;  // Return early to prevent the input from being processed
         }
+#ifdef EMSCRIPTEN_BUILD
+        if (Game::isMobile && IsGestureDetected(GESTURE_TAP)) {
+            gameInstance->isFirstStartup = false;
+            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
+            return;  // Return early to prevent the input from being processed
+        }
+#endif
     }
 
     EndDrawing();
@@ -259,13 +291,19 @@ int main()
     windowHeight = WEB_CANVAS_HEIGHT;
     fullscreen = false;
     SetWindowSize(windowWidth, windowHeight);
-    gameScale = 0.7f;
+    // Adjust the gameScale if on a mobile device
+    if (Game::isMobile) {
+        // Use a smaller scale for mobile devices to ensure everything fits on screen
+        gameScale = 0.6f;
+    } else {
+        gameScale = 0.7f;
+    }
 #else
     SetWindowSize(windowWidth - borderW, windowHeight - borderH);
     SetWindowPosition(50, 50);
     ToggleBorderlessWindowed();
     // Calculate scale for desktop build
-    gameScale = MIN((float)GetGameScreenWidth() / gameScreenWidth, (float)GetGameScreenHeight() / gameScreenHeight);
+    gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 #endif
 
     gameScreenWidth = gameScreenWidth + offset;
@@ -279,6 +317,11 @@ int main()
 
 #ifdef EMSCRIPTEN_BUILD
     // Use emscripten_set_main_loop for Emscripten builds
+    // Adjust the gameScale if on a mobile device
+    if (Game::isMobile) {
+        // Use a smaller scale for mobile devices to ensure everything fits on screen
+        gameScale = 1.0f;
+    }
     emscripten_set_main_loop(GameLoop, 0, 1);
 #else
     // Regular desktop game loop

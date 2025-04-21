@@ -206,7 +206,11 @@ void Game::Update()
         lostLifeTimer += GetFrameTime();
         
         // Only allow continuing after 300ms debuff
+#ifdef EMSCRIPTEN_BUILD
+        if (lostLifeTimer >= 0.3f && (GetKeyPressed() != 0 || (isMobile && IsGestureDetected(GESTURE_TAP))))
+#else
         if (lostLifeTimer >= 0.3f && GetKeyPressed() != 0)
+#endif
         {
             lostLife = false;
             lostLifeTimer = 0.0f;  // Reset timer

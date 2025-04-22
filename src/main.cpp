@@ -230,15 +230,6 @@ void GameLoop()
 #ifdef EMSCRIPTEN_BUILD
         }
 #endif
-        
-        // Handle key input for non-space keys (space and tap are handled in UpdateWindow)
-        if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
-            IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
-            IsKeyPressed(KEY_A) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_W) || IsKeyPressed(KEY_S)) {
-            gameInstance->Reset();
-            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
-            return;  // Return early to prevent the input from being processed
-        }
     }
     else if (gameInstance->lostLife)
     {

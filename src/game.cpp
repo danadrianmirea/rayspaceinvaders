@@ -338,11 +338,11 @@ void Game::Update()
         // Update debuff timer
         lostLifeTimer += GetFrameTime();
         
-        // Only allow continuing after 300ms debuff
+        // Only allow continuing after inputDelayTime
 #ifdef EMSCRIPTEN_BUILD
-        if (lostLifeTimer >= 0.3f && (GetKeyPressed() != 0 || (isMobile && IsGestureDetected(GESTURE_TAP))))
+        if (lostLifeTimer >= inputDelayTime && (GetKeyPressed() != 0 || (isMobile && IsGestureDetected(GESTURE_TAP))))
 #else
-        if (lostLifeTimer >= 0.3f && GetKeyPressed() != 0)
+        if (lostLifeTimer >= inputDelayTime && GetKeyPressed() != 0)
 #endif
         {
             lostLife = false;
@@ -350,6 +350,24 @@ void Game::Update()
             spaceship.Reset();  // Reset player position
             spaceship.lasers.clear();  // Clear player lasers
             alienLasers.clear();  // Clear alien lasers
+        }
+    }
+    else if (gameOver)
+    {
+        // Update game over delay timer
+        gameOverTimer += GetFrameTime();
+        
+        // Only allow restarting after inputDelayTime
+#ifdef EMSCRIPTEN_BUILD
+        if (gameOverTimer >= inputDelayTime && (GetKeyPressed() != 0 || (isMobile && IsGestureDetected(GESTURE_TAP))))
+#else
+        if (gameOverTimer >= inputDelayTime && GetKeyPressed() != 0)
+#endif
+        {
+            Reset();
+            gameOver = false;
+            gameOverTimer = 0.0f;  // Reset timer
+            startupDelayTimer = 0.1f;  // Set a short delay before input is processed again
         }
     }
 }
@@ -586,6 +604,7 @@ void Game::CheckForCollisions()
 void Game::GameOver()
 {
     gameOver = true;
+    gameOverTimer = 0.0f;  // Initialize the game over delay timer
 }
 
 void Game::CheckForHighScore()

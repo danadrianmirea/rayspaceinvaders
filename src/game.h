@@ -61,6 +61,7 @@ public:
     bool isFirstFrameAfterReset;  // Flag to ignore first input after state changes
     float lostLifeTimer;  // Timer for debuff after losing a life
     float startupDelayTimer;  // Timer for startup delay
+    float gameOverTimer;  // Timer for game over screen delay
     int lives;
     int score;
     int highScore;
@@ -94,6 +95,7 @@ private:
     bool alienUpdateTimerExpired;
     float alienUpdateTimer;
     const float alienUpdateRate = 0.01f;
+    const float inputDelayTime = 0.5f;  // Delay time for input after life lost or game over
 
     MysteryShip mysteryShip;
     float mysteryShipSpawnInterval;

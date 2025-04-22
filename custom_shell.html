@@ -3,13 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="screen-orientation" content="landscape">
+    <meta name="full-screen" content="yes">
+    <meta name="browsermode" content="application">
 
     <title>raylib web game</title>
 
     <meta name="title" content="raylib web game">
     <meta name="description" content="New raylib web videogame, developed using raylib videogames library">
     <meta name="keywords" content="raylib, programming, examples, html5, C, C++, library, learn, games, videogames">
-    <meta name="viewport" content="width=device-width">
 
     <!-- Open Graph metatags for sharing -->
     <meta property="og:type" content="website" />
@@ -40,6 +43,29 @@
           background-color: black;
         }
         canvas.emscripten { border: 0px none; background-color: black;}
+        
+        @media screen and (orientation:portrait) {
+          #orientation-message {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            color: white;
+            text-align: center;
+            padding-top: 50%;
+            font-size: 24px;
+            z-index: 1000;
+          }
+        }
+        
+        @media screen and (orientation:landscape) {
+          #orientation-message {
+            display: none;
+          }
+        }
     </style>
     <script type='text/javascript' src="https://cdn.jsdelivr.net/gh/eligrey/FileSaver.js/dist/FileSaver.min.js"> </script>
     <script type='text/javascript'>
@@ -64,20 +90,46 @@
 	<script>
 	  function resizeCanvas() {
 		var canvas = document.getElementById('canvas');
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
+		// Force landscape dimensions
+		if (window.innerHeight > window.innerWidth) {
+		  canvas.width = window.innerHeight;
+		  canvas.height = window.innerWidth;
+		} else {
+		  canvas.width = window.innerWidth;
+		  canvas.height = window.innerHeight;
+		}
 
 		if (Module && Module.setCanvasSize) {
 		  Module.setCanvasSize(canvas.width, canvas.height);
 		}
 	  }
 
+	  // Lock screen orientation to landscape
+	  function lockScreenOrientation() {
+		if (screen.orientation && screen.orientation.lock) {
+		  screen.orientation.lock('landscape')
+			.catch(function(error) {
+			  console.log('Orientation lock failed: ' + error);
+			});
+		}
+	  }
+
 	  window.addEventListener('resize', resizeCanvas);
-	  window.addEventListener('load', resizeCanvas);
+	  window.addEventListener('load', function() {
+		resizeCanvas();
+		lockScreenOrientation();
+	  });
+	  
+	  // Handle orientation changes
+	  window.addEventListener('orientationchange', function() {
+		resizeCanvas();
+		lockScreenOrientation();
+	  });
 	</script>	
     </head>
 	
     <body>
+        <div id="orientation-message">Please rotate your device to landscape mode to play the game.</div>
         <canvas class=emscripten id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas>
 		
 		<style>

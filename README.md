@@ -43,3 +43,7 @@ build_emscripten.bat
 - P: Pause/Resume
 - ESC: Exit menu
 - Y/N: Confirm/Cancel exit
+
+
+Big thanks to https://github.com/educ8s (https://www.youtube.com/@programmingwithnick) for making great Raylib tutorials on youtube.
+

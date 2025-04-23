@@ -6,11 +6,21 @@ A Space Invaders game made using Raylib.
 
 ### Desktop Build
 
-To build the game for desktop platforms, use the following command:
+To build the game for desktop platforms, follow these steps:
 
+1. Create a build directory:
 ```
-make
+mkdir build
+cd build
 ```
+
+2. Configure and build the project:
+```
+cmake ..
+cmake --build .
+```
+
+The executable will be created in the `build` directory.
 
 ### Emscripten Build (Web)
 
@@ -24,11 +34,6 @@ build_emscripten.bat
 #### Linux/macOS:
 ```
 ./build_emscripten.sh
-```
-
-Or directly with make:
-```
-make emscripten
 ```
 
 ## Controls

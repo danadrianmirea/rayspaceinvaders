@@ -99,8 +99,11 @@
 
 	  window.addEventListener('resize', resizeCanvas);
 	  window.addEventListener('load', function() {
-		resizeCanvas();
-		lockScreenOrientation();
+		// Use requestAnimationFrame to ensure the resize happens after the page is fully rendered
+		requestAnimationFrame(function() {
+			resizeCanvas();
+			lockScreenOrientation();
+		});
 	  });
 	  
 	  // Handle orientation changes
@@ -138,30 +141,39 @@
 				
         <p id="output" />
         <script>
+            // Initialize canvas and resize it immediately
+            var canvas = document.getElementById('canvas');
+            resizeCanvas();
+            
             var Module = {
-                print: (function() {
-                    var element = document.getElementById('output');
-                    if (element) element.value = ''; // clear browser cache
-                    return function(text) {
-                        if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
-                        console.log(text);
-                        if (element) {
-                          element.value += text + "\n";
-                          element.scrollTop = element.scrollHeight; // focus on bottom
-                        }
-                    };
-                })(),
-                canvas: (function() {
-                    var canvas = document.getElementById('canvas');
-                    canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
-                    canvas.style.touchAction = 'none';
-                    canvas.style.webkitTouchCallout = 'none';
-                    canvas.style.webkitUserSelect = 'none';5
-                    canvas.style.userSelect = 'none';
-                    return canvas;
-                })()
-            };
-        </script>
+                    print: (function() {
+                        var element = document.getElementById('output');
+                        if (element) element.value = ''; // clear browser cache
+                        return function(text) {
+                            if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+                            console.log(text);
+                            if (element) {
+                              element.value += text + "\n";
+                              element.scrollTop = element.scrollHeight; // focus on bottom
+                            }
+                        };
+                    })(),
+                    canvas: (function() {
+                        canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+                        canvas.style.touchAction = 'none';
+                        canvas.style.webkitTouchCallout = 'none';
+                        canvas.style.webkitUserSelect = 'none';
+                        canvas.style.userSelect = 'none';
+                        return canvas;
+                    })(),
+                    onRuntimeInitialized: function() {
+                        // Final resize after everything is initialized
+                        requestAnimationFrame(function() {
+                            resizeCanvas();
+                        });
+                    }
+                };
+            </script>
         {{{ SCRIPT }}}
     </body>
 </html>

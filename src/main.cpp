@@ -38,7 +38,6 @@ int offset = 50;
 Game* gameInstance = nullptr;
 Font gameFont;
 RenderTexture2D gameTarget;
-float gameScale = 1.0f;
 Texture2D spaceshipImage;
 
 void UpdateWindow(Game& game)
@@ -201,74 +200,74 @@ void GameLoop()
 
     if (exitWindowRequested)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
-        DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 40 * gameScale * uiScale), 1000 * gameScale * uiScale, 120 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
+        DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
     }
     else if (gameInstance->paused)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 40 * gameScale * uiScale), 1000 * gameScale * uiScale, 120 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
 #ifdef EMSCRIPTEN_BUILD
-        DrawText("Game paused, press P or ESC to continue", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+        DrawText("Game paused, press P or ESC to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
 #else
-        DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+        DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
 #endif
     }
     else if (gameInstance->lostWindowFocus)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
-        DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 40 * gameScale * uiScale), 1000 * gameScale * uiScale, 120 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
+        DrawText("Game paused, focus window to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
     }
     else if (gameInstance->gameOver)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 40 * gameScale * uiScale), 1000 * gameScale * uiScale, 120 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
 #ifdef EMSCRIPTEN_BUILD
         if (Game::isMobile) {
-            DrawText("Game over, tap to play again", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+            DrawText("Game over, tap to play again", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
         } else {
 #endif
-            DrawText("Game over, press any key to play again", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+            DrawText("Game over, press any key to play again", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
 #ifdef EMSCRIPTEN_BUILD
         }
 #endif
     }
     else if (gameInstance->lostLife)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 40 * gameScale), 1000 * gameScale, 120 * gameScale }, 0.76f, 20 * gameScale, BLACK);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 40 * gameScale * uiScale), 1000 * gameScale * uiScale, 120 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
 #ifdef EMSCRIPTEN_BUILD
         if (Game::isMobile) {
-            DrawText("You lost a life! Tap to continue", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+            DrawText("You lost a life! Tap to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
         } else {
 #endif
-            DrawText("You lost a life! Press any key to continue", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2, 40 * gameScale, yellow);
+            DrawText("You lost a life! Press any key to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
 #ifdef EMSCRIPTEN_BUILD
         }
 #endif
     }
     else if (gameInstance->isFirstStartup)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale), (float)(GetScreenHeight() / 2 - 200 * gameScale), 1000 * gameScale, 450 * gameScale }, 0.76f, 20 * gameScale, BLACK);
-        DrawText("Welcome to Space Invaders!", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 150 * gameScale, 40 * gameScale, yellow);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 200 * gameScale * uiScale), 1000 * gameScale * uiScale, 450 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
+        DrawText("Welcome to Space Invaders!", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 - 150 * gameScale * uiScale, 40 * gameScale * uiScale, yellow);
 
 #ifdef EMSCRIPTEN_BUILD
         if (Game::isMobile)
         {
             // Mobile-specific controls text
-            DrawText("Controls:", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 80 * gameScale, 30 * gameScale, yellow);
-            DrawText("Yellow Circle (Left) - Shoot", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 30 * gameScale, 25 * gameScale, yellow);
-            DrawText("Yellow Buttons (Right) - Move ship", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 10 * gameScale, 25 * gameScale, yellow);
-            DrawText("Tap anywhere to start the game", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 90 * gameScale, 30 * gameScale, yellow);
+            DrawText("Controls:", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 - 80 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
+            DrawText("Yellow Circle (Left) - Shoot", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 - 30 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
+            DrawText("Yellow Buttons (Right) - Move ship", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 10 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
+            DrawText("Tap anywhere to start the game", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 90 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
         }
         else
         {
             // Desktop/browser controls text
 #endif
-            DrawText("Controls:", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 80 * gameScale, 30 * gameScale, yellow);
-            DrawText("Arrow Keys or WASD - Move spaceship", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 - 30 * gameScale, 25 * gameScale, yellow);
-            DrawText("Shift - Speed boost while moving", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 10 * gameScale, 25 * gameScale, yellow);
-            DrawText("Space or W - Shoot", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 50 * gameScale, 25 * gameScale, yellow);
-            DrawText("P - Pause game", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 90 * gameScale, 25 * gameScale, yellow);
-            DrawText("ESC - Exit game", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 130 * gameScale, 25 * gameScale, yellow);
-            DrawText("Press any key to start the game", GetScreenWidth() / 2 - 400 * gameScale, GetScreenHeight() / 2 + 190 * gameScale, 30 * gameScale, yellow);
+            DrawText("Controls:", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 - 80 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
+            DrawText("Arrow Keys or WASD - Move spaceship", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 - 30 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
+            DrawText("Shift - Speed boost while moving", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 10 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
+            DrawText("Space or W - Shoot", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 50 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
+            DrawText("P - Pause game", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 90 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
+            DrawText("ESC - Exit game", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 130 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
+            DrawText("Press any key to start the game", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 190 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
 #ifdef EMSCRIPTEN_BUILD
         }
 #endif

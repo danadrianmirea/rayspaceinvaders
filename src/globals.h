@@ -14,3 +14,4 @@ extern int gameScreenHeight;
 extern int frameOffsetLeft;
 extern int frameOffsetRight;
 extern float gameScale;
+extern float uiScale;

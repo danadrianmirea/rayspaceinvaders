@@ -44,28 +44,6 @@
         }
         canvas.emscripten { border: 0px none; background-color: black;}
         
-        @media screen and (orientation:portrait) {
-          #orientation-message {
-            display: block;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            color: white;
-            text-align: center;
-            padding-top: 50%;
-            font-size: 24px;
-            z-index: 1000;
-          }
-        }
-        
-        @media screen and (orientation:landscape) {
-          #orientation-message {
-            display: none;
-          }
-        }
     </style>
     <script type='text/javascript' src="https://cdn.jsdelivr.net/gh/eligrey/FileSaver.js/dist/FileSaver.min.js"> </script>
     <script type='text/javascript'>
@@ -90,13 +68,18 @@
 	<script>
 	  function resizeCanvas() {
 		var canvas = document.getElementById('canvas');
+		var screenWidth = window.innerWidth;
+		var screenHeight = window.innerHeight;
+		
 		// Force landscape dimensions
-		if (window.innerHeight > window.innerWidth) {
-		  canvas.width = window.innerHeight;
-		  canvas.height = window.innerWidth;
+		if (screenHeight > screenWidth) {
+		  // Portrait mode - use width for both width and height
+		  canvas.width = screenWidth;
+		  canvas.height = screenWidth;
 		} else {
-		  canvas.width = window.innerWidth;
-		  canvas.height = window.innerHeight;
+		  // Landscape mode - use standard dimensions
+		  canvas.width = screenWidth;
+		  canvas.height = screenHeight;
 		}
 
 		if (Module && Module.setCanvasSize) {
@@ -129,7 +112,6 @@
     </head>
 	
     <body>
-        <div id="orientation-message">Please rotate your device to landscape mode to play the game.</div>
         <canvas class=emscripten id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas>
 		
 		<style>
@@ -140,12 +122,15 @@
 			background: black;
 			height: 100%;
 			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		  }
 
 		  canvas {
-			width: 100%;
-			height: 100%;
 			display: block;
+			max-width: 100%;
+			max-height: 100%;
 		  }
 		</style>
 				
@@ -166,6 +151,12 @@
                 })(),
                 canvas: (function() {
                     var canvas = document.getElementById('canvas');
+                    
+                    // Force resize after 300ms to fix Emscripten web build issues
+                    setTimeout(function() {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 300);
+                    
                     return canvas;
                 })()
             };

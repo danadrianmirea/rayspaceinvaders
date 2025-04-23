@@ -13,9 +13,6 @@ bool fullscreen = true;
 const int borderH = 100;
 const int borderW = (int)(1920.0f / 1080.f * borderH);
 
-#define WEB_CANVAS_WIDTH 960
-#define WEB_CANVAS_HEIGHT 540
-
 // Wrapper functions for screen dimensions are no longer needed as we use GetScreenWidth directly
 
 std::string FormatWithLeadingZeroes(int number, int width)
@@ -301,17 +298,7 @@ int main()
     gameFont = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
 
 #ifdef EMSCRIPTEN_BUILD
-    windowWidth = WEB_CANVAS_WIDTH;
-    windowHeight = WEB_CANVAS_HEIGHT;
     fullscreen = false;
-    SetWindowSize(windowWidth, windowHeight);
-    // Adjust the gameScale if on a mobile device
-    if (Game::isMobile) {
-        // Use a smaller scale for mobile devices to ensure everything fits on screen
-        gameScale = 0.6f;
-    } else {
-        gameScale = 0.7f;
-    }
 #else
     SetWindowSize(windowWidth - borderW, windowHeight - borderH);
     SetWindowPosition(50, 50);

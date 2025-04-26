@@ -101,6 +101,13 @@ void Game::HandleMobileControls()
     rightButtonPressed = false;
     fireButtonPressed = false;
     
+    // Update debounce timer
+    if (pauseDebounceTimer > 0.0f)
+    {
+        pauseDebounceTimer -= GetFrameTime();
+        return;  // Skip input processing while debouncing
+    }
+    
     // Check for touches
     if (GetTouchPointCount() > 0)
     {
@@ -121,6 +128,20 @@ void Game::HandleMobileControls()
                 (touchPos.x - gameScreenX) / gameScale,
                 (touchPos.y - gameScreenY) / gameScale
             };
+
+            // Check for center screen tap to pause/unpause
+            float centerX = gameScreenWidth / 2;
+            float centerY = gameScreenHeight / 2;
+            float centerRadius = 100.0f; // Radius for center tap detection
+            
+            if (IsPointInCircle(gameSpaceTouchPos, (Vector2){centerX, centerY}, centerRadius))
+            {
+                // Toggle pause state and set debounce timer
+                paused = !paused;
+                pauseDebounceTimer = 0.3f;  // 300ms debounce
+                continue; // Skip other button checks if we're pausing
+            }
+
             // Create a collision rectangle centered on the fire button
             Rectangle scaledFireButtonRect = {
                 fireButtonPos.x - collisionRadius*3,
@@ -129,17 +150,13 @@ void Game::HandleMobileControls()
                 collisionRadius * 6 + extraHeight
             };
 
- 
-
             // Check fire button
             if (IsPointInRectangle(gameSpaceTouchPos, scaledFireButtonRect))
             {
                 fireButtonPressed = true;
                 spaceship.FireLaser();
             }
-
       
-            
             Rectangle scaledLeftButtonRect = {
                 leftButtonRect.x - collisionRadius,
                 leftButtonRect.y - collisionRadius - extraHeight,
@@ -153,7 +170,6 @@ void Game::HandleMobileControls()
                 rightButtonRect.width + 2 * collisionRadius,
                 rightButtonRect.height + 2 * collisionRadius + extraHeight
             };
-
 
             // Check movement buttons
             if (IsPointInRectangle(gameSpaceTouchPos, scaledLeftButtonRect))
@@ -185,6 +201,7 @@ Game::Game()
     InitGame();
     isFirstStartup = true;  // Initialize first startup state
     startupDelayTimer = 0.0f;  // Initialize startup delay timer
+    pauseDebounceTimer = 0.0f;  // Initialize pause debounce timer
 }
 
 Game::~Game()
@@ -267,6 +284,7 @@ void Game::Reset()
     mysteryShipSpawnInterval = GetRandomValue(10, 20);
     isFirstFrameAfterReset = true;
     gameOver = false;  // Reset the game over flag
+    pauseDebounceTimer = 0.0f;  // Reset pause debounce timer
     
     // Restore the previous fire rate
     spaceship.SetFireRate(currentFireRate);
@@ -299,6 +317,9 @@ void Game::Draw()
 
 void Game::Update()
 {
+    // Always handle input, even when paused
+    HandleInput();
+
     bool running = (paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false && lostLife == false && isFirstStartup == false);
     if (running)
     {
@@ -321,7 +342,6 @@ void Game::Update()
                 timeLastMysteryShipSpawn = GetTime();
             }
         }
-        HandleInput();
 
         spaceship.Update();
         mysteryShip.Update();
@@ -400,7 +420,7 @@ void Game::HandleInput()
     }
     
     // Don't process input if game is not running
-    if (paused || lostWindowFocus || isInExitMenu || gameOver || lostLife || isFirstStartup)
+    if (lostWindowFocus || isInExitMenu || gameOver || lostLife || isFirstStartup)
     {
         return;
     }
@@ -408,31 +428,32 @@ void Game::HandleInput()
 #ifdef EMSCRIPTEN_BUILD
     if (isMobile)
     {
-        // Use dedicated mobile controls instead of gesture detection
+        // Handle mobile controls
         HandleMobileControls();
     }
     else
+#endif
     {
         // Regular desktop/browser controls
-#endif
-        // Movement controls (both arrow keys and WASD)
-        if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
+        if (!paused)  // Only process these controls when not paused
         {
-            spaceship.MoveLeft();
+            // Movement controls (both arrow keys and WASD)
+            if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
+            {
+                spaceship.MoveLeft();
+            }
+            if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
+            {
+                spaceship.MoveRight();
+            }
+            
+            // Fire control (both space and W)
+            if (IsKeyDown(KEY_SPACE) || IsKeyDown(KEY_W))
+            {
+                spaceship.FireLaser();
+            }
         }
-        if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
-        {
-            spaceship.MoveRight();
-        }
-        
-        // Fire control (both space and W)
-        if (IsKeyDown(KEY_SPACE) || IsKeyDown(KEY_W))
-        {
-            spaceship.FireLaser();
-        }
-#ifdef EMSCRIPTEN_BUILD
     }
-#endif
 }
 
 void Game::AlienShootLaser()

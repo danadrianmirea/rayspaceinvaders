@@ -62,6 +62,7 @@ public:
     float lostLifeTimer;  // Timer for debuff after losing a life
     float startupDelayTimer;  // Timer for startup delay
     float gameOverTimer;  // Timer for game over screen delay
+    float pauseDebounceTimer;  // Timer to prevent rapid pause toggling
     int lives;
     int score;
     int highScore;

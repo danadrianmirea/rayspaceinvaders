@@ -102,7 +102,7 @@ void UpdateWindow(Game& game)
 #ifndef EMSCRIPTEN_BUILD
     if (exitWindowRequested == false && game.lostWindowFocus == false && game.gameOver == false && IsKeyPressed(KEY_P))    
 #else
-    if (exitWindowRequested == false && game.lostWindowFocus == false && game.gameOver == false && ( IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE) ) )
+    if (exitWindowRequested == false && game.lostWindowFocus == false && game.gameOver == false && !Game::isMobile && (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE)))
 #endif
     {
         if (game.paused)
@@ -195,7 +195,7 @@ void GameLoop()
         0, 0
     }, 0.0f, WHITE);
 
-    if (exitWindowRequested)
+    if (exitWindowRequested) 
     {
         DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 40 * gameScale * uiScale), 1000 * gameScale * uiScale, 120 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
         DrawText("Are you sure you want to exit? [Y/N]", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
@@ -204,7 +204,11 @@ void GameLoop()
     {
         DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 40 * gameScale * uiScale), 1000 * gameScale * uiScale, 120 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
 #ifdef EMSCRIPTEN_BUILD
-        DrawText("Game paused, press P or ESC to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
+        if (Game::isMobile) {
+            DrawText("Game paused, tap to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
+        } else {
+            DrawText("Game paused, press P or ESC to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
+        }
 #else
         DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
 #endif

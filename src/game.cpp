@@ -49,7 +49,7 @@ bool Game::IsPointInRectangle(Vector2 point, Rectangle rect)
 
 void Game::DrawMobileControls()
 {
-    if (!isMobile || paused || lostWindowFocus || isInExitMenu || gameOver || lostLife || isFirstStartup)
+    if (!isMobile)
         return;
     
     // Draw fire button (red circle)

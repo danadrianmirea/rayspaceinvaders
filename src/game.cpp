@@ -257,40 +257,6 @@ void Game::InitGame()
     spaceship.SetFireRate(newFireRate);
 }
 
-void Game::Reset()
-{
-    // Store the current fire rate before resetting
-    float currentFireRate = spaceship.GetFireRate();
-    
-    obstacles.clear();
-    aliens.clear();
-    alienLasers.clear();
-    spaceship.Reset();
-    
-    // Don't call InitGame() here as it would reset the level and fire rate
-    // Instead, just recreate the game elements
-    CreateObstacles();
-    CreateAliens();
-    aliensDirection = 1;
-    aliensReadyToFire = false;
-    alienFireTimer = 0.0f;
-    paused = false;
-    lostWindowFocus = false;
-    isInExitMenu = false;
-    lostLife = false;
-    lostLifeTimer = 0.0f;
-    alienUpdateTimer = 0.0f;
-    alienUpdateTimerExpired = false;
-    timeLastMysteryShipSpawn = 0.0f;
-    mysteryShipSpawnInterval = GetRandomValue(10, 20);
-    isFirstFrameAfterReset = true;
-    gameOver = false;  // Reset the game over flag
-    pauseDebounceTimer = 0.0f;  // Reset pause debounce timer
-    gameOverTimer = 0.0f;  // Reset timer
-    // Restore the previous fire rate
-    spaceship.SetFireRate(currentFireRate);
-}
-
 void Game::Draw()
 {
     spaceship.Draw();
@@ -359,7 +325,6 @@ void Game::Update()
 
         CheckForCollisions();
         
-        // Check if all aliens are defeated
         if (aliens.empty())
         {
             AdvanceLevel();
@@ -395,7 +360,7 @@ void Game::Update()
         if (gameOverTimer >= inputDelayTime && GetKeyPressed() != 0)
 #endif
         {
-            Reset();
+            InitGame();
         }
     }
 }

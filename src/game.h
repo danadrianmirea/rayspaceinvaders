@@ -12,7 +12,6 @@ public:
     Game();
     ~Game();
     void InitGame();
-    void Reset();
     Game(const Game &) = delete;
     const Game &operator=(const Game &g) = delete;
     Game(Game &&) = delete;

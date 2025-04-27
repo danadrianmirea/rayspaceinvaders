@@ -200,6 +200,7 @@ Game::Game()
     DetectMobileDevice();
     InitGame();
     isFirstStartup = true;  // Initialize first startup state
+    startupDelayTimer = 0.0f;
 }
 
 Game::~Game()
@@ -280,6 +281,13 @@ void Game::Draw()
 
 void Game::Update()
 {
+    // Handle startup delay
+    if (startupDelayTimer > 0.0f)
+    {
+        startupDelayTimer -= GetFrameTime();
+        return;  // Skip game logic during startup delay
+    }
+
     // Always handle input, even when paused
     HandleInput();
 
@@ -346,6 +354,7 @@ void Game::Update()
 #endif
         {
             InitGame();
+            startupDelayTimer = 0.1f;
         }
     }
 }

@@ -9,7 +9,7 @@
 
 bool exitWindowRequested = false; // Flag to request window to exit
 bool exitWindow = false;          // Flag to set window to exit
-bool fullscreen = true;
+bool fullscreen = false;
 const int borderH = 100;
 const int borderW = (int)(1920.0f / 1080.f * borderH);
 
@@ -43,12 +43,14 @@ void UpdateWindow(Game& game)
     {
         if (GetKeyPressed() != KEY_NULL) {
             gameInstance->isFirstStartup = false;
-            return;  // Return early to prevent the input from being processed
+            gameInstance->startupDelayTimer = 0.1f;
+            return; 
         }
 
         if (Game::isMobile && IsGestureDetected(GESTURE_TAP)) {
             gameInstance->isFirstStartup = false;
-            return;  // Return early to prevent the input from being processed
+            gameInstance->startupDelayTimer = 0.1f;
+            return;
         }
     }
 
@@ -65,15 +67,13 @@ void UpdateWindow(Game& game)
         if (fullscreen)
         {
             fullscreen = false;
-            SetWindowSize(windowWidth - borderW, windowHeight - borderH);
+            ToggleBorderlessWindowed();
         }
         else
         {
             fullscreen = true;
-            SetWindowSize(windowWidth, windowHeight);
+            ToggleBorderlessWindowed();
         }
-        // ToggleFullscreen();
-        ToggleBorderlessWindowed();
     }
 #endif
 
@@ -102,19 +102,12 @@ void UpdateWindow(Game& game)
     }
 
 #ifndef EMSCRIPTEN_BUILD
-    if (exitWindowRequested == false && game.lostWindowFocus == false && game.lostLife == false && game.gameOver == false && IsKeyPressed(KEY_P))    
+    if (exitWindowRequested == false && game.lostWindowFocus == false && game.lostLife == false && game.gameOver == false && IsKeyPressed(KEY_P))
 #else
     if (exitWindowRequested == false && game.lostWindowFocus == false && game.lostLife == false && game.gameOver == false && !Game::isMobile && (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE)))
 #endif
     {
-        if (game.paused)
-        {
-            game.paused = false;
-        }
-        else
-        {
-            game.paused = true;
-        }
+        game.paused = !game.paused;
     }
 }
 
@@ -126,7 +119,6 @@ void GameLoop()
 #endif
 
     gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
-
     UpdateWindow(*gameInstance);
 
 #ifdef EMSCRIPTEN_BUILD
@@ -251,7 +243,7 @@ void GameLoop()
     }
     else if (gameInstance->isFirstStartup)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 200 * gameScale * uiScale), 1000 * gameScale * uiScale, 450 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 200 * gameScale * uiScale), 1000 * gameScale * uiScale, 500 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
         DrawText("Welcome to Space Invaders!", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 - 150 * gameScale * uiScale, 40 * gameScale * uiScale, yellow);
 
 #ifdef EMSCRIPTEN_BUILD
@@ -274,7 +266,8 @@ void GameLoop()
             DrawText("Space or W - Shoot", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 50 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
             DrawText("P - Pause game", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 90 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
             DrawText("ESC - Exit game", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 130 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
-            DrawText("Press any key to start the game", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 190 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
+            DrawText("ALT + ENTER - Toggle fullscreen", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 170 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
+            DrawText("Press any key to start the game", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 220 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
 #ifdef EMSCRIPTEN_BUILD
         }
 #endif
@@ -286,6 +279,9 @@ void GameLoop()
 int main()
 {
     InitWindow(gameScreenWidth, gameScreenHeight, "Space invaders");
+#ifndef EMSCRIPTEN_BUILD
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
+#endif
     InitAudioDevice();
     SetMasterVolume(0.22f);
     SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
@@ -297,7 +293,10 @@ int main()
 #else
     SetWindowSize(windowWidth - borderW, windowHeight - borderH);
     SetWindowPosition(50, 50);
-    ToggleBorderlessWindowed();
+    if(fullscreen) 
+    {
+        ToggleBorderlessWindowed();
+    }
     // Calculate scale for desktop build
     gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 #endif

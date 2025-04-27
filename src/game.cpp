@@ -129,17 +129,14 @@ void Game::HandleMobileControls()
             
             if (IsPointInCircle(gameSpaceTouchPos, (Vector2){centerX, centerY}, centerRadius))
             {
-                // Only toggle pause on new touch points, not held ones
-                if (GetTouchPointId(i) == 0) // Only process the first touch point for pause
+                // Only process the first touch point for pause
+                if (GetTouchPointId(i) == 0)
                 {
-                    static bool wasTouching = false;
-                    bool isTouching = true;
-                    
-                    if (isTouching && !wasTouching) // Only toggle on new touch
+                    // Check if this is a new touch (not held)
+                    if (IsGestureDetected(GESTURE_TAP))
                     {
                         paused = !paused;
                     }
-                    wasTouching = isTouching;
                 }
                 continue; // Skip other button checks if we're in the pause area
             }

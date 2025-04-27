@@ -29,6 +29,8 @@ public:
     void SaveHighScoreToFile();
     int LoadHighScoreFromFile();
 
+    Spaceship& GetSpaceship() { return spaceship; }
+
     // Mobile controls
 #ifdef EMSCRIPTEN_BUILD
     void DrawMobileControls();

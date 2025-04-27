@@ -44,12 +44,14 @@ void UpdateWindow(Game& game)
         if (GetKeyPressed() != KEY_NULL) {
             gameInstance->isFirstStartup = false;
             gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
+            gameInstance->GetSpaceship().Reset();
             return;  // Return early to prevent the input from being processed
         }
 
         if (Game::isMobile && IsGestureDetected(GESTURE_TAP)) {
             gameInstance->isFirstStartup = false;
             gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
+            gameInstance->GetSpaceship().Reset();
             return;  // Return early to prevent the input from being processed
         }
     }
@@ -78,18 +80,6 @@ void UpdateWindow(Game& game)
         ToggleBorderlessWindowed();
     }
 #endif
-
-#ifdef EMSCRIPTEN_BUILD
-    if (game.gameOver && (GetKeyPressed() != KEY_NULL || (Game::isMobile && IsGestureDetected(GESTURE_TAP))))
-#else
-    if (game.gameOver && GetKeyPressed() != KEY_NULL)
-#endif
-    {
-        game.Reset();
-        game.gameOver = false;  // Explicitly set gameOver to false
-        game.startupDelayTimer = 0.1f;  // Set a short delay before input is processed again
-        return;
-    }
 
 #ifndef EMSCRIPTEN_BUILD
     if (exitWindowRequested)

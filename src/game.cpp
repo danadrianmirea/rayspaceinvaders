@@ -101,13 +101,6 @@ void Game::HandleMobileControls()
     rightButtonPressed = false;
     fireButtonPressed = false;
     
-    // Update debounce timer
-    if (pauseDebounceTimer > 0.0f)
-    {
-        pauseDebounceTimer -= GetFrameTime();
-        return;  // Skip input processing while debouncing
-    }
-    
     // Check for touches
     if (GetTouchPointCount() > 0)
     {
@@ -136,10 +129,19 @@ void Game::HandleMobileControls()
             
             if (IsPointInCircle(gameSpaceTouchPos, (Vector2){centerX, centerY}, centerRadius))
             {
-                // Toggle pause state and set debounce timer
-                paused = !paused;
-                pauseDebounceTimer = 0.3f;  // 300ms debounce
-                continue; // Skip other button checks if we're pausing
+                // Only toggle pause on new touch points, not held ones
+                if (GetTouchPointId(i) == 0) // Only process the first touch point for pause
+                {
+                    static bool wasTouching = false;
+                    bool isTouching = true;
+                    
+                    if (isTouching && !wasTouching) // Only toggle on new touch
+                    {
+                        paused = !paused;
+                    }
+                    wasTouching = isTouching;
+                }
+                continue; // Skip other button checks if we're in the pause area
             }
 
             // Create a collision rectangle centered on the fire button
@@ -387,7 +389,6 @@ void Game::Update()
     {
         // Update game over delay timer
         gameOverTimer += GetFrameTime();
-        
         // Only allow restarting after inputDelayTime
 #ifdef EMSCRIPTEN_BUILD
         if (gameOverTimer >= inputDelayTime && (GetKeyPressed() != 0 || (isMobile && IsGestureDetected(GESTURE_TAP))))

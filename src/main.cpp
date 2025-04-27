@@ -174,8 +174,11 @@ void GameLoop()
     DrawTextEx(gameFont, "HIGH-SCORE", { 570, 15 }, 34 * gameScale, 2 * gameScale, yellow);
     std::string highScoreText = FormatWithLeadingZeroes(gameInstance->highScore, 7);
     DrawTextEx(gameFont, highScoreText.c_str(), { 570, 40 }, 34 * gameScale, 2 * gameScale, yellow);
-
+#ifdef EMSCRIPTEN_BUILD
+    float x = (float)gameScreenWidth/2 - 180;
+#else
     float x = (float)gameScreenWidth/2 - 120;
+#endif
 
     std::string levelText = "LEVEL " + FormatWithLeadingZeroes(gameInstance->currentLevel, 2);
     DrawTextEx(gameFont, levelText.c_str(), { x, 740 }, 34 * gameScale, 2 * gameScale, yellow);

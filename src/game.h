@@ -98,7 +98,7 @@ private:
     bool alienUpdateTimerExpired;
     float alienUpdateTimer;
     const float alienUpdateRate = 0.01f;
-    const float inputDelayTime = 0.5f;  // Delay time for input after life lost or game over
+    const float inputDelayTime = 0.2f;  // Delay time for input after life lost or game over
 
     MysteryShip mysteryShip;
     float mysteryShipSpawnInterval;

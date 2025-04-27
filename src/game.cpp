@@ -141,6 +141,8 @@ void Game::HandleMobileControls()
                 continue; // Skip other button checks if we're in the pause area
             }
 
+            if (paused) return;
+
             // Create a collision rectangle centered on the fire button
             Rectangle scaledFireButtonRect = {
                 fireButtonPos.x - collisionRadius*3,
@@ -284,7 +286,7 @@ void Game::Reset()
     isFirstFrameAfterReset = true;
     gameOver = false;  // Reset the game over flag
     pauseDebounceTimer = 0.0f;  // Reset pause debounce timer
-    
+    gameOverTimer = 0.0f;  // Reset timer
     // Restore the previous fire rate
     spaceship.SetFireRate(currentFireRate);
 }
@@ -394,9 +396,6 @@ void Game::Update()
 #endif
         {
             Reset();
-            gameOver = false;
-            gameOverTimer = 0.0f;  // Reset timer
-            startupDelayTimer = 0.1f;  // Set a short delay before input is processed again
         }
     }
 }

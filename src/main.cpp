@@ -39,8 +39,23 @@ Texture2D spaceshipImage;
 
 void UpdateWindow(Game& game)
 {
+    if (game.isFirstFrameAfterReset || game.isFirstStartup)
+    {
+        if (GetKeyPressed() != KEY_NULL) {
+            gameInstance->isFirstStartup = false;
+            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
+            return;  // Return early to prevent the input from being processed
+        }
+
+        if (Game::isMobile && IsGestureDetected(GESTURE_TAP)) {
+            gameInstance->isFirstStartup = false;
+            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
+            return;  // Return early to prevent the input from being processed
+        }
+    }
+
 #ifndef EMSCRIPTEN_BUILD
-    if (WindowShouldClose() || (IsKeyPressed(KEY_ESCAPE) && exitWindowRequested == false))
+    if (WindowShouldClose() || (IsKeyPressed(KEY_ESCAPE) && exitWindowRequested == false && !game.gameOver && !game.lostLife && !game.lostWindowFocus))
     {
         exitWindowRequested = true;
         game.isInExitMenu = true;
@@ -65,14 +80,15 @@ void UpdateWindow(Game& game)
 #endif
 
 #ifdef EMSCRIPTEN_BUILD
-    if (game.gameOver && (IsKeyPressed(KEY_SPACE) || (Game::isMobile && IsGestureDetected(GESTURE_TAP))))
+    if (game.gameOver && (GetKeyPressed() != KEY_NULL || (Game::isMobile && IsGestureDetected(GESTURE_TAP))))
 #else
-    if (game.gameOver && IsKeyPressed(KEY_SPACE))
+    if (game.gameOver && GetKeyPressed() != KEY_NULL)
 #endif
     {
         game.Reset();
         game.gameOver = false;  // Explicitly set gameOver to false
         game.startupDelayTimer = 0.1f;  // Set a short delay before input is processed again
+        return;
     }
 
 #ifndef EMSCRIPTEN_BUILD
@@ -100,9 +116,9 @@ void UpdateWindow(Game& game)
     }
 
 #ifndef EMSCRIPTEN_BUILD
-    if (exitWindowRequested == false && game.lostWindowFocus == false && game.gameOver == false && IsKeyPressed(KEY_P))    
+    if (exitWindowRequested == false && game.lostWindowFocus == false && game.lostLife == false && game.gameOver == false && IsKeyPressed(KEY_P))    
 #else
-    if (exitWindowRequested == false && game.lostWindowFocus == false && game.gameOver == false && !Game::isMobile && (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE)))
+    if (exitWindowRequested == false && game.lostWindowFocus == false && game.lostLife == false && game.gameOver == false && !Game::isMobile && (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE)))
 #endif
     {
         if (game.paused)
@@ -273,20 +289,7 @@ void GameLoop()
         }
 #endif
         
-        if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE) || 
-            IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN) ||
-            IsKeyPressed(KEY_A) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_W) || IsKeyPressed(KEY_S)) {
-            gameInstance->isFirstStartup = false;
-            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
-            return;  // Return early to prevent the input from being processed
-        }
-#ifdef EMSCRIPTEN_BUILD
-        if (Game::isMobile && IsGestureDetected(GESTURE_TAP)) {
-            gameInstance->isFirstStartup = false;
-            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
-            return;  // Return early to prevent the input from being processed
-        }
-#endif
+
     }
 
     EndDrawing();

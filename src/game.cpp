@@ -125,7 +125,7 @@ void Game::HandleMobileControls()
             // Check for center screen tap to pause/unpause
             float centerX = gameScreenWidth / 2;
             float centerY = gameScreenHeight / 2;
-            float centerRadius = 100.0f; // Radius for center tap detection
+            float centerRadius = 200.0f; // Radius for center tap detection
             
             if (IsPointInCircle(gameSpaceTouchPos, (Vector2){centerX, centerY}, centerRadius))
             {
@@ -198,11 +198,8 @@ Game::Game()
 #endif
     // Detect if we're on a mobile device
     DetectMobileDevice();
-
     InitGame();
     isFirstStartup = true;  // Initialize first startup state
-    startupDelayTimer = 0.0f;  // Initialize startup delay timer
-    pauseDebounceTimer = 0.0f;  // Initialize pause debounce timer
 }
 
 Game::~Game()
@@ -289,17 +286,6 @@ void Game::Update()
     bool running = (paused == false && lostWindowFocus == false && isInExitMenu == false && gameOver == false && lostLife == false && isFirstStartup == false);
     if (running)
     {
-        // Handle startup delay
-        if (startupDelayTimer > 0.0f)
-        {
-            startupDelayTimer -= GetFrameTime();
-            if (startupDelayTimer <= 0.0f)
-            {
-                InitGame();  // Initialize game after delay expires
-            }
-            return;  // Skip game logic during startup delay
-        }
-
         double currentTime = GetTime();
         {
             if (currentTime - timeLastMysteryShipSpawn > mysteryShipSpawnInterval)

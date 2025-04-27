@@ -43,15 +43,11 @@ void UpdateWindow(Game& game)
     {
         if (GetKeyPressed() != KEY_NULL) {
             gameInstance->isFirstStartup = false;
-            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
-            gameInstance->GetSpaceship().Reset();
             return;  // Return early to prevent the input from being processed
         }
 
         if (Game::isMobile && IsGestureDetected(GESTURE_TAP)) {
             gameInstance->isFirstStartup = false;
-            gameInstance->startupDelayTimer = 0.1f;  // Set 100ms delay
-            gameInstance->GetSpaceship().Reset();
             return;  // Return early to prevent the input from being processed
         }
     }
@@ -211,15 +207,15 @@ void GameLoop()
     }
     else if (gameInstance->paused)
     {
-        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 500 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 40 * gameScale * uiScale), 1000 * gameScale * uiScale, 120 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
+        DrawRectangleRounded({ (float)(GetScreenWidth() / 2 - 550 * gameScale * uiScale), (float)(GetScreenHeight() / 2 - 40 * gameScale * uiScale), 1100 * gameScale * uiScale, 120 * gameScale * uiScale }, 0.76f, 20 * gameScale * uiScale, BLACK);
 #ifdef EMSCRIPTEN_BUILD
         if (Game::isMobile) {
-            DrawText("Game paused, tap to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
+            DrawText("Game paused, tap center of screen to continue", GetScreenWidth() / 2 - 450 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
         } else {
-            DrawText("Game paused, press P or ESC to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
+            DrawText("Game paused, press P or ESC to continue", GetScreenWidth() / 2 - 350 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
         }
 #else
-        DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
+        DrawText("Game paused, press P to continue", GetScreenWidth() / 2 - 350 * gameScale * uiScale, GetScreenHeight() / 2, 40 * gameScale * uiScale, yellow);
 #endif
     }
     else if (gameInstance->lostWindowFocus)
@@ -265,7 +261,8 @@ void GameLoop()
             DrawText("Controls:", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 - 80 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
             DrawText("Yellow Circle (Left) - Shoot", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 - 30 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
             DrawText("Yellow Buttons (Right) - Move ship", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 10 * gameScale * uiScale, 25 * gameScale * uiScale, yellow);
-            DrawText("Tap anywhere to start the game", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 90 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
+            DrawText("Tap center of screen to pause/unpause", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 90 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
+            DrawText("Tap anywhere to start the game", GetScreenWidth() / 2 - 400 * gameScale * uiScale, GetScreenHeight() / 2 + 130 * gameScale * uiScale, 30 * gameScale * uiScale, yellow);
         }
         else
         {

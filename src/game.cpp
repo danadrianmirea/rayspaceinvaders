@@ -242,7 +242,6 @@ void Game::InitGame()
     gameOver = false;
     timeLastMysteryShipSpawn = 0.0f;
     mysteryShipSpawnInterval = GetRandomValue(10, 20);
-    isFirstFrameAfterReset = true;  // Set flag to ignore first input
 
     // Reset spaceship position and state
     spaceship.Reset();
@@ -330,16 +329,16 @@ void Game::Update()
             AdvanceLevel();
         }
     }
-    else if (lostLife)
+    else if (lostLife && !gameOver)
     {
         // Update debuff timer
         lostLifeTimer += GetFrameTime();
         
         // Only allow continuing after inputDelayTime
 #ifdef EMSCRIPTEN_BUILD
-        if (lostLifeTimer >= inputDelayTime && (GetKeyPressed() != 0 || (isMobile && IsGestureDetected(GESTURE_TAP))))
+        if (lostLifeTimer >= inputDelayTime && (GetKeyPressed() != KEY_NULL || (isMobile && IsGestureDetected(GESTURE_TAP))))
 #else
-        if (lostLifeTimer >= inputDelayTime && GetKeyPressed() != 0)
+        if (lostLifeTimer >= inputDelayTime && GetKeyPressed() != KEY_NULL)
 #endif
         {
             lostLife = false;
@@ -355,9 +354,9 @@ void Game::Update()
         gameOverTimer += GetFrameTime();
         // Only allow restarting after inputDelayTime
 #ifdef EMSCRIPTEN_BUILD
-        if (gameOverTimer >= inputDelayTime && (GetKeyPressed() != 0 || (isMobile && IsGestureDetected(GESTURE_TAP))))
+        if (gameOverTimer >= inputDelayTime && (GetKeyPressed() != KEY_NULL || (isMobile && IsGestureDetected(GESTURE_TAP))))
 #else
-        if (gameOverTimer >= inputDelayTime && GetKeyPressed() != 0)
+        if (gameOverTimer >= inputDelayTime && GetKeyPressed() != KEY_NULL)
 #endif
         {
             InitGame();
@@ -373,14 +372,7 @@ void Game::DeleteInactiveAlienLasers()
 }
 
 void Game::HandleInput()
-{
-    // Clear the first frame flag if it's set
-    if (isFirstFrameAfterReset)
-    {
-        isFirstFrameAfterReset = false;
-        return;  // Skip input on the first frame
-    }
-    
+{  
     // Don't process input if game is not running
     if (lostWindowFocus || isInExitMenu || gameOver || lostLife || isFirstStartup)
     {

@@ -39,7 +39,7 @@ Texture2D spaceshipImage;
 
 void UpdateWindow(Game& game)
 {
-    if (game.isFirstFrameAfterReset || game.isFirstStartup)
+    if (game.isFirstStartup)
     {
         if (GetKeyPressed() != KEY_NULL) {
             gameInstance->isFirstStartup = false;
@@ -281,8 +281,6 @@ void GameLoop()
 #ifdef EMSCRIPTEN_BUILD
         }
 #endif
-        
-
     }
 
     EndDrawing();

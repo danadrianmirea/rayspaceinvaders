@@ -114,9 +114,7 @@ void UpdateWindow(Game& game)
 // Main game loop function that will be called by emscripten_set_main_loop
 void GameLoop()
 {
-#if MUSIC == 1
     UpdateMusicStream(gameInstance->music);
-#endif
 
     gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
     UpdateWindow(*gameInstance);
@@ -289,7 +287,6 @@ int main()
     SetWindowState(FLAG_WINDOW_RESIZABLE);
 #endif
     InitAudioDevice();
-    SetMasterVolume(0.22f);
     SetExitKey(KEY_NULL); // Disable KEY_ESCAPE to close window, X-button still works
 
     gameFont = LoadFontEx("Font/monogram.ttf", 64, 0, 0);

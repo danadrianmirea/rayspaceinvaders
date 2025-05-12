@@ -14,9 +14,7 @@ Spaceship::~Spaceship()
 {
     UnloadTexture(image);
     UnloadSound(laserSound);
-#if MUSIC == 1
-    UnloadMusicStream(music);
-#endif
+
 }
 
 void Spaceship::Reset()

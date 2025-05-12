@@ -192,10 +192,9 @@ void Game::HandleMobileControls()
 Game::Game()
 {
     explosionSound = LoadSound("Sounds/explosion.ogg");
-#if MUSIC == 1
-    music = LoadMusicStream("Sounds/music.ogg");
+    music = LoadMusicStream("Sounds/music.mp3");
     PlayMusicStream(music);
-#endif
+    SetMusicVolume(music, musicVolume);
     // Detect if we're on a mobile device
     DetectMobileDevice();
     InitGame();
@@ -206,9 +205,7 @@ Game::Game()
 Game::~Game()
 {
     Alien::UnloadImages();
-#if MUSIC == 1
     UnloadMusicStream(music);
-#endif
     UnloadSound(explosionSound);
 }
 

@@ -7,8 +7,6 @@
 #include <emscripten.h>
 #endif
 
-#define MUSIC 0
-
 extern int gameScreenWidth;
 extern int gameScreenHeight;
 extern int frameOffsetLeft;

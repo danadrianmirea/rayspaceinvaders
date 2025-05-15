@@ -57,6 +57,7 @@ public:
     bool gameOver;
     bool lostLife;
     bool isFirstStartup;  // New state variable for first startup
+    bool isMusicMuted;    // Track if music is muted
     float startupDelayTimer;
     float lostLifeTimer;  // Timer for debuff after losing a life
     float gameOverTimer;  // Timer for game over screen delay

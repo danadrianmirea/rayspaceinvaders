@@ -200,6 +200,7 @@ Game::Game()
     InitGame();
     isFirstStartup = true;  // Initialize first startup state
     startupDelayTimer = 0.0f;
+    isMusicMuted = false;   // Initialize music mute state
 }
 
 Game::~Game()
@@ -237,6 +238,12 @@ void Game::InitGame()
     gameOver = false;
     timeLastMysteryShipSpawn = 0.0f;
     mysteryShipSpawnInterval = GetRandomValue(10, 20);
+
+    // Resume music if it was previously muted and game restarts
+    if (!isMusicMuted && !IsMusicStreamPlaying(music))
+    {
+        ResumeMusicStream(music);
+    }
 
     // Reset spaceship position and state
     spaceship.Reset();
@@ -381,6 +388,21 @@ void Game::HandleInput()
 #endif
     {
         // Regular desktop/browser controls
+        
+        // Toggle music with M key (for desktop and web desktop builds)
+        if (IsKeyPressed(KEY_M))
+        {
+            isMusicMuted = !isMusicMuted;
+            if (isMusicMuted)
+            {
+                PauseMusicStream(music);
+            }
+            else
+            {
+                ResumeMusicStream(music);
+            }
+        }
+        
         if (!paused)  // Only process these controls when not paused
         {
             // Movement controls (both arrow keys and WASD)

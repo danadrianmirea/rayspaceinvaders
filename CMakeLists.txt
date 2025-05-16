@@ -82,14 +82,14 @@ file(COPY Font DESTINATION ${CMAKE_BINARY_DIR})
 # Create zip file after build
 if(WIN32)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/zip_temp/rayspaceinvaders
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${CMAKE_CURRENT_BINARY_DIR}/zip_temp/rayspaceinvaders/
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/Graphics ${CMAKE_CURRENT_BINARY_DIR}/zip_temp/rayspaceinvaders/Graphics
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/Sounds ${CMAKE_CURRENT_BINARY_DIR}/zip_temp/rayspaceinvaders/Sounds
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/Font ${CMAKE_CURRENT_BINARY_DIR}/zip_temp/rayspaceinvaders/Font
-        COMMAND powershell -Command "Compress-Archive -Path '${CMAKE_CURRENT_BINARY_DIR}/zip_temp/*' -DestinationPath '${CMAKE_CURRENT_BINARY_DIR}/rayspaceinvaders.zip' -Force"
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/zip_temp/${PROJECT_NAME}
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${CMAKE_CURRENT_BINARY_DIR}/zip_temp/${PROJECT_NAME}/
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/Graphics ${CMAKE_CURRENT_BINARY_DIR}/zip_temp/${PROJECT_NAME}/Graphics
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/Sounds ${CMAKE_CURRENT_BINARY_DIR}/zip_temp/${PROJECT_NAME}/Sounds
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/Font ${CMAKE_CURRENT_BINARY_DIR}/zip_temp/${PROJECT_NAME}/Font
+        COMMAND powershell -Command "Compress-Archive -Path '${CMAKE_CURRENT_BINARY_DIR}/zip_temp/*' -DestinationPath '${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.zip' -Force"
         COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/zip_temp
-        COMMENT "Creating rayspaceinvaders.zip"
+        COMMENT "Creating ${PROJECT_NAME}.zip"
     )
 else()
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

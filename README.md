@@ -40,6 +40,7 @@ build_emscripten.bat
 
 - Arrow keys: Move the spaceship
 - Space: Shoot
+- M: Toggle music on/off
 - P: Pause/Resume
 - ESC: Exit menu
 - Y/N: Confirm/Cancel exit

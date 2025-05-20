@@ -2,6 +2,8 @@
 
 A Space Invaders game made using Raylib.
 
+Play on itch.io: https://adrianmirea.itch.io/
+
 ## Building the Game
 
 ### Desktop Build

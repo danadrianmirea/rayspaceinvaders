@@ -8,10 +8,10 @@
           "name": "Debug",
           "type": "cppdbg",
           "request": "launch",
-          "program": "${workspaceFolder}/spaceinvaders.exe",
+          "program": "${workspaceFolder}/build/SpaceInvaders.exe",
           "args": [],
           "stopAtEntry": false,
-          "cwd": "${workspaceFolder}",
+          "cwd": "${workspaceFolder}/build",
           "environment": [],
           "externalConsole": false,
           "MIMode": "gdb",
@@ -23,13 +23,13 @@
             }
           ],
           "windows": {
-            "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe",
+            "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe"
           },
           "osx": {
             "MIMode": "lldb"
           },
           "linux": {
-            "miDebuggerPath": "/usr/bin/gdb",
+            "miDebuggerPath": "/usr/bin/gdb"
           },
           "preLaunchTask": "build debug"
         },
@@ -39,13 +39,12 @@
           "request": "launch",
           "args": [],
           "stopAtEntry": false,
-          "cwd": "${workspaceFolder}",
+          "cwd": "${workspaceFolder}/build",
           "environment": [],
           "externalConsole": false,
-          "program": "${workspaceFolder}/spaceinvaders.exe",
+          "program": "${workspaceFolder}/build/SpaceInvaders.exe",
           "MIMode": "gdb",
           "windows": {
-            "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe",
             "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe"
           },
           "osx": {
@@ -54,7 +53,7 @@
           "linux": {
             "miDebuggerPath": "/usr/bin/gdb"
           },
-          "preLaunchTask": "build release",
+          "preLaunchTask": "build release"
         }
       ]
     }

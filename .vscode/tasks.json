@@ -5,38 +5,14 @@
     "tasks": [
         {
             "label": "build debug",
-            "type": "process",
-            "command": "make",
+            "type": "shell",
+            "command": "cmake",
             "args": [
-                "PLATFORM=PLATFORM_DESKTOP",
-                "BUILD_MODE=DEBUG"
+                "-B",
+                "build",
+                "-DCMAKE_BUILD_TYPE=Debug",
+                "."
             ],
-            "windows": {
-                "command": "C:/raylib/w64devkit/bin/mingw32-make.exe",
-                "args": [
-                    "RAYLIB_PATH=C:/raylib/raylib",
-                    "PROJECT_NAME=spaceinvaders",
-                    "OBJS=src/*.cpp",
-                    "BUILD_MODE=DEBUG"
-                ]
-            },
-            "osx": {
-                "args": [
-                    "PROJECT_NAME=spaceinvaders",
-                    "OBJS=src/*.cpp",
-                    "BUILD_MODE=DEBUG"
-                ]
-            },
-            "linux": {
-                "args": [
-                    "PROJECT_NAME=spaceinvaders",
-                    "DESTDIR=/home/linuxbrew/.linuxbrew",
-                    "RAYLIB_LIBTYPE=SHARED",
-                    "EXAMPLE_RUNTIME_PATH=/home/linuxbrew/.linuxbrew/lib",
-                    "OBJS=src/*.cpp",
-                    "BUILD_MODE=DEBUG"
-                ]
-            },
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -47,42 +23,21 @@
         },
         {
             "label": "build release",
-            "type": "process",
-            "command": "make",
+            "type": "shell",
+            "command": "cmake",
             "args": [
-                "PLATFORM=PLATFORM_DESKTOP"
-            ],
-            "windows": {
-                "command": "C:/raylib/w64devkit/bin/mingw32-make.exe",
-                "args": [
-                    "RAYLIB_PATH=C:/raylib/raylib",
-                    "PROJECT_NAME=spaceinvaders",
-                    "OBJS=src/*.cpp"
-                ]
-            },
-            "osx": {
-                "args": [
-                    "PROJECT_NAME=spaceinvaders",
-                    "OBJS=src/*.cpp"
-                ]
-            },
-            "linux": {
-                "args": [
-                    "PROJECT_NAME=spaceinvaders",
-                    "DESTDIR=/home/linuxbrew/.linuxbrew",
-                    "RAYLIB_LIBTYPE=SHARED",
-                    "EXAMPLE_RUNTIME_PATH=/home/linuxbrew/.linuxbrew/lib",
-                    "OBJS=src/*.cpp"
-                ]
-            },
-            "problemMatcher": [
-                "$gcc"
+                "--build",
+                "build",
+                "--config",
+                "Release"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": false
             },
-            "detail": "compiler: C:\\raylib\\w64devkit\\bin\\g++.exe"
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
     ]
 }

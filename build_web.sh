@@ -13,11 +13,7 @@ emcc src/*.cpp -o web-build/index.html \
   -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" \
   -s ALLOW_MEMORY_GROWTH=1 \
   --preload-file Font@/Font \
-  --preload-file Graphics/alien_1.png@/Graphics/alien_1.png \
-  --preload-file Graphics/alien_2.png@/Graphics/alien_2.png \
-  --preload-file Graphics/alien_3.png@/Graphics/alien_3.png \
-  --preload-file Graphics/mystery.png@/Graphics/mystery.png \
-  --preload-file Graphics/spaceship.png@/Graphics/spaceship.png \
+  --preload-file Graphics@/Graphics \
   --preload-file Sounds@/Sounds \
   --shell-file custom_shell.html
 

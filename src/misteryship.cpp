@@ -3,7 +3,10 @@
 
 MysteryShip::MysteryShip()
 {
-    image = LoadTexture("Graphics/mystery.png");
+    Image img = LoadImage("Graphics/mystery.png");
+    ImageResize(&img, misteryShipSize, (int)((float)img.height * ((float)misteryShipSize / (float)img.width)));
+    image = LoadTextureFromImage(img);
+    UnloadImage(img);
     alive = false;
 }
 

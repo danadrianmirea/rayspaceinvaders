@@ -1,11 +1,15 @@
 #include "globals.h"
 #include "laser.h"
 
-Laser::Laser(Vector2 pos, float spd)
+Texture2D Laser::laserTexture;
+Texture2D Laser::alienLaserTexture;
+
+Laser::Laser(Vector2 pos, float spd, bool isPlayer)
 {
     position = pos;
     speed = spd;
     active = true;
+    isPlayerLaser = isPlayer;
 }
 
 void Laser::Update()
@@ -25,11 +29,18 @@ void Laser::Draw()
 {
     if (active)
     {
-        DrawRectangle(position.x, position.y, laserWidth * 1.0f, laserHeight * 1.0f, laserColor);
+        if (isPlayerLaser)
+        {
+            DrawTexture(laserTexture, position.x, position.y, WHITE);
+        }
+        else
+        {
+            DrawTexture(alienLaserTexture, position.x, position.y, WHITE);
+        }
     }
 }
 
 Rectangle Laser::getRect()
 {
-    return {position.x, position.y, 4.0f * 1.0f, 4.0f * 1.0f};
+    return {position.x, position.y, (float)laserTexture.width, (float)laserTexture.height};
 }

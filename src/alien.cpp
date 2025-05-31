@@ -10,19 +10,32 @@ Alien::Alien(int typeId, Vector2 pos)
 
     if (alienImages[type - 1].id == 0)
     {
+        Image img;
         switch (type)
         {
         case 1:
-            alienImages[0] = LoadTexture("Graphics/alien_1.png");
+            img = LoadImage("Graphics/alien_1.png");
+            ImageResize(&img, alienSize, (int)((float)img.height * ((float)alienSize / (float)img.width)));
+            alienImages[0] = LoadTextureFromImage(img);
+            UnloadImage(img);
             break;
         case 2:
-            alienImages[1] = LoadTexture("Graphics/alien_2.png");
+            img = LoadImage("Graphics/alien_2.png");
+            ImageResize(&img, alienSize, (int)((float)img.height * ((float)alienSize / (float)img.width)));
+            alienImages[1] = LoadTextureFromImage(img);
+            UnloadImage(img);
             break;
         case 3:
-            alienImages[2] = LoadTexture("Graphics/alien_3.png");
+            img = LoadImage("Graphics/alien_3.png");
+            ImageResize(&img, alienSize, (int)((float)img.height * ((float)alienSize / (float)img.width)));
+            alienImages[2] = LoadTextureFromImage(img);
+            UnloadImage(img);
             break;
         default:
-            alienImages[0] = LoadTexture("Graphics/alien_1.png");
+            img = LoadImage("Graphics/alien_1.png");
+            ImageResize(&img, alienSize, (int)((float)img.height * ((float)alienSize / (float)img.width)));
+            alienImages[0] = LoadTextureFromImage(img);
+            UnloadImage(img);
             break;
         }
     }

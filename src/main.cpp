@@ -3,6 +3,7 @@
 // #include "raymath.h"
 #include "game.h"
 #include "globals.h"
+#include "laser.h"
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -151,21 +152,24 @@ void GameLoop()
     Rectangle border = { 10, 10, 780, 780 };
     DrawRectangleRoundedLinesEx(border, 0.18f, 20, 2.0f * gameScale, yellow);
 
+    const int uiFontSize = 28;
+    const int toggleMusicFontSize = 28;
+
     DrawLineEx({ 25, 730 - 50 }, { 775, 730 - 50 }, 3 * gameScale, yellow);
 
-    DrawTextEx(gameFont, "SCORE", { 50, 15 }, 34 * gameScale, 2 * gameScale, yellow);
+    DrawTextEx(gameFont, "SCORE", { 50, 15 }, uiFontSize * gameScale, 2 * gameScale, yellow);
     std::string scoreText = FormatWithLeadingZeroes(gameInstance->score, 7);
-    DrawTextEx(gameFont, scoreText.c_str(), { 50, 40 }, 34 * gameScale, 2 * gameScale, yellow);
+    DrawTextEx(gameFont, scoreText.c_str(), { 50, 40 }, uiFontSize * gameScale, 2 * gameScale, yellow);
 
     // Draw music toggle status
-    const int toggleMusicFontSize = 34;
+
     const char* musicStatus = gameInstance->isMusicMuted ? "M: music(OFF)" : "M: music(ON)";
     int textWidth = MeasureTextEx(gameFont, musicStatus, toggleMusicFontSize * gameScale, 2 * gameScale).x;
     DrawTextEx(gameFont, musicStatus, { (float)(gameScreenWidth - textWidth) / 2, 15 }, toggleMusicFontSize * gameScale, 2 * gameScale, yellow);
 
-    DrawTextEx(gameFont, "HIGH-SCORE", { 570, 15 }, 34 * gameScale, 2 * gameScale, yellow);
+    DrawTextEx(gameFont, "HIGH-SCORE", { 570, 15 }, uiFontSize * gameScale, 2 * gameScale, yellow);
     std::string highScoreText = FormatWithLeadingZeroes(gameInstance->highScore, 7);
-    DrawTextEx(gameFont, highScoreText.c_str(), { 570, 40 }, 34 * gameScale, 2 * gameScale, yellow);
+    DrawTextEx(gameFont, highScoreText.c_str(), { 570, 40 }, uiFontSize * gameScale, 2 * gameScale, yellow);
 #ifdef EMSCRIPTEN_BUILD
     float x = (float)gameScreenWidth/2 - 180;
 #else
@@ -173,7 +177,7 @@ void GameLoop()
 #endif
 
     std::string levelText = "LEVEL " + FormatWithLeadingZeroes(gameInstance->currentLevel, 2);
-    DrawTextEx(gameFont, levelText.c_str(), { x, 740 }, 34 * gameScale, 2 * gameScale, yellow);
+    DrawTextEx(gameFont, levelText.c_str(), { x, 740 }, uiFontSize * gameScale, 2 * gameScale, yellow);
 
     for (int i = 0; i < gameInstance->lives; i++)
     {
@@ -318,7 +322,22 @@ int main()
     SetTargetFPS(144);
 
     gameInstance = new Game();
-    spaceshipImage = LoadTexture("Graphics/spaceship.png");
+    Image img = LoadImage("Graphics/spaceship.png");
+    ImageResize(&img, uiSpaceshipSize, (int)((float)img.height * ((float)uiSpaceshipSize / (float)img.width)));
+    spaceshipImage = LoadTextureFromImage(img);
+    UnloadImage(img);
+    
+    // Load laser texture
+    img = LoadImage("Graphics/laser.png");
+    ImageResize(&img, laserWidth, laserHeight);
+    Laser::laserTexture = LoadTextureFromImage(img);
+    UnloadImage(img);
+
+    // Load alien laser texture
+    img = LoadImage("Graphics/alien_laser.png");
+    ImageResize(&img, laserWidth, laserHeight);
+    Laser::alienLaserTexture = LoadTextureFromImage(img);
+    UnloadImage(img);
 
 #ifdef EMSCRIPTEN_BUILD
     // Use emscripten_set_main_loop for Emscripten builds
@@ -339,6 +358,8 @@ int main()
     CloseWindow();
     UnloadFont(gameFont);
     UnloadTexture(spaceshipImage);
+    UnloadTexture(Laser::laserTexture);
+    UnloadTexture(Laser::alienLaserTexture);
     UnloadRenderTexture(gameTarget);
     CloseAudioDevice();
     return 0;

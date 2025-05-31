@@ -5,7 +5,10 @@
 
 Spaceship::Spaceship()
 {
-    image = LoadTexture("Graphics/spaceship.png");
+    Image img = LoadImage("Graphics/spaceship.png");
+    ImageResize(&img, spaceshipSize, (int)((float)img.height * ((float)spaceshipSize / (float)img.width)));
+    image = LoadTextureFromImage(img);
+    UnloadImage(img);
     laserSound = LoadSound("Sounds/laser.ogg");
     Reset();
 }
@@ -85,7 +88,7 @@ void Spaceship::FireLaser()
 {
     if (readyToFire)
     {
-        lasers.push_back(Laser({position.x + image.width / 2 - Laser::laserWidth / 2, position.y}, laserSpeed));
+        lasers.push_back(Laser({position.x + image.width / 2 - Laser::laserTexture.width / 2, position.y}, laserSpeed, true));
         PlaySound(laserSound);
         readyToFire = false;
     }

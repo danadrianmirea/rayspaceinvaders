@@ -157,6 +157,12 @@ void GameLoop()
     std::string scoreText = FormatWithLeadingZeroes(gameInstance->score, 7);
     DrawTextEx(gameFont, scoreText.c_str(), { 50, 40 }, 34 * gameScale, 2 * gameScale, yellow);
 
+    // Draw music toggle status
+    const int toggleMusicFontSize = 34;
+    const char* musicStatus = gameInstance->isMusicMuted ? "M: music(OFF)" : "M: music(ON)";
+    int textWidth = MeasureTextEx(gameFont, musicStatus, toggleMusicFontSize * gameScale, 2 * gameScale).x;
+    DrawTextEx(gameFont, musicStatus, { (float)(gameScreenWidth - textWidth) / 2, 15 }, toggleMusicFontSize * gameScale, 2 * gameScale, yellow);
+
     DrawTextEx(gameFont, "HIGH-SCORE", { 570, 15 }, 34 * gameScale, 2 * gameScale, yellow);
     std::string highScoreText = FormatWithLeadingZeroes(gameInstance->highScore, 7);
     DrawTextEx(gameFont, highScoreText.c_str(), { 570, 40 }, 34 * gameScale, 2 * gameScale, yellow);

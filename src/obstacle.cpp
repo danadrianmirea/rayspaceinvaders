@@ -1,3 +1,4 @@
+#include <cstddef>
 #include "obstacle.h"
 #include "block.h"
 
@@ -21,17 +22,22 @@ std::vector<std::vector<int>> Obstacle::grid
 Obstacle::Obstacle(Vector2 pos)
 {
     position = pos;
-
-    for (unsigned int row = 0; row < grid.size(); ++row)
+    size_t rows = grid.size();
+    size_t cols = grid[0].size();
+    blocks.resize(rows, std::vector<Block>(cols, Block({0,0})));
+    for (size_t row = 0; row < rows; ++row)
     {
-        for (unsigned int column = 0; column < grid[0].size(); ++column)
+        for (size_t col = 0; col < cols; ++col)
         {
-            if (grid[row][column])
+            if (grid[row][col])
             {
-                float pos_x = position.x + column * Block::blockWidth;
+                float pos_x = position.x + col * Block::blockWidth;
                 float pos_y = position.y + row * Block::blockWidth;
-                Block block = Block({pos_x, pos_y});
-                blocks.push_back(block);
+                blocks[row][col] = Block({pos_x, pos_y});
+            }
+            else
+            {
+                blocks[row][col].Invalidate();
             }
         }
     }
@@ -39,11 +45,11 @@ Obstacle::Obstacle(Vector2 pos)
 
 void Obstacle::Draw()
 {
-    const int gridWidth = 23;  // Width of the grid pattern
-    for (int i = 0; i < blocks.size(); ++i)
+    for (size_t row = 0; row < blocks.size(); ++row)
     {
-        int row = i / gridWidth;
-        int col = i % gridWidth;
-        blocks[i].Draw(row, col);
+        for (size_t col = 0; col < blocks[row].size(); ++col)
+        {
+            blocks[row][col].Draw(row, col);
+        }
     }
 }

@@ -20,6 +20,8 @@ Block::Block(Vector2 pos)
 
 void Block::Draw(int row, int col)
 {
+    if (!isValid) return;  // Skip drawing if block is invalid
+
     if (blockImage.data)
     {
         Color pixelColor = GetImageColor(blockImage, col, row);

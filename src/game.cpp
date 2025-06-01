@@ -491,19 +491,19 @@ void Game::CheckForCollisions()
         // Check obstacle collisions
         for (auto &obs : obstacles)
         {
-            auto it = obs.blocks.begin();
-            while (it != obs.blocks.end())
+            for (size_t row = 0; row < obs.blocks.size(); ++row)
             {
-                if (CheckCollisionRecs(it->getRect(), laser.getRect()))
+                for (size_t col = 0; col < obs.blocks[row].size(); ++col)
                 {
-                    it = obs.blocks.erase(it);
-                    laser.active = false;
-                    break;
+                    Block &block = obs.blocks[row][col];
+                    if (block.IsValid() && CheckCollisionRecs(block.getRect(), laser.getRect()))
+                    {
+                        block.Invalidate();
+                        laser.active = false;
+                        break;
+                    }
                 }
-                else
-                {
-                    ++it;
-                }
+                if (!laser.active) break;
             }
             if (!laser.active) break;
         }
@@ -549,24 +549,21 @@ void Game::CheckForCollisions()
 
         for (auto &obs : obstacles)
         {
-            auto it = obs.blocks.begin();
-            while (it != obs.blocks.end())
+            for (size_t row = 0; row < obs.blocks.size(); ++row)
             {
-                if (CheckCollisionRecs(it->getRect(), laser.getRect()))
+                for (size_t col = 0; col < obs.blocks[row].size(); ++col)
                 {
-                    it = obs.blocks.erase(it);
-                    laser.active = false;
-                    break;
+                    Block &block = obs.blocks[row][col];
+                    if (block.IsValid() && CheckCollisionRecs(block.getRect(), laser.getRect()))
+                    {
+                        block.Invalidate();
+                        laser.active = false;
+                        break;
+                    }
                 }
-                else
-                {
-                    ++it;
-                }
+                if (!laser.active) break;
             }
-            if (laser.active == false)
-            {
-                break;
-            }
+            if (!laser.active) break;
         }
 
         if (laser.active == false)
@@ -580,16 +577,15 @@ void Game::CheckForCollisions()
     {
         for (auto &obstacle : obstacles)
         {
-            auto it = obstacle.blocks.begin();
-            while (it != obstacle.blocks.end())
+            for (size_t row = 0; row < obstacle.blocks.size(); ++row)
             {
-                if (CheckCollisionRecs(it->getRect(), alien.getRect()))
+                for (size_t col = 0; col < obstacle.blocks[row].size(); ++col)
                 {
-                    it = obstacle.blocks.erase(it);
-                }
-                else
-                {
-                    it++;
+                    Block &block = obstacle.blocks[row][col];
+                    if (block.IsValid() && CheckCollisionRecs(block.getRect(), alien.getRect()))
+                    {
+                        block.Invalidate();
+                    }
                 }
             }
         }

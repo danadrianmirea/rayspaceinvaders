@@ -1,4 +1,5 @@
 #include "obstacle.h"
+#include "block.h"
 
 std::vector<std::vector<int>> Obstacle::grid
 {
@@ -38,8 +39,11 @@ Obstacle::Obstacle(Vector2 pos)
 
 void Obstacle::Draw()
 {
-    for (auto &block : blocks)
+    const int gridWidth = 23;  // Width of the grid pattern
+    for (int i = 0; i < blocks.size(); ++i)
     {
-        block.Draw();
+        int row = i / gridWidth;
+        int col = i % gridWidth;
+        blocks[i].Draw(row, col);
     }
 }

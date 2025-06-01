@@ -37,6 +37,7 @@ Game* gameInstance = nullptr;
 Font gameFont;
 RenderTexture2D gameTarget;
 Texture2D spaceshipImage;
+Texture2D backgroundTexture;  // Add background texture
 
 void UpdateWindow(Game& game)
 {
@@ -148,7 +149,9 @@ void GameLoop()
 
     BeginTextureMode(gameTarget);
 
-    ClearBackground(grey);
+    // Draw background texture
+    DrawTexture(backgroundTexture, 0, 0, WHITE);
+    
     Rectangle border = { 10, 10, 780, 780 };
     DrawRectangleRoundedLinesEx(border, 0.18f, 20, 2.0f * gameScale, yellow);
 
@@ -302,6 +305,9 @@ int main()
 
     gameFont = LoadFontEx("Font/monogram.ttf", 64, 0, 0);
 
+    // Load background texture
+    backgroundTexture = LoadTexture("Graphics/background.png");
+
 #ifdef EMSCRIPTEN_BUILD
     fullscreen = false;
 #else
@@ -360,6 +366,7 @@ int main()
     UnloadTexture(spaceshipImage);
     UnloadTexture(Laser::laserTexture);
     UnloadTexture(Laser::alienLaserTexture);
+    UnloadTexture(backgroundTexture);  // Unload background texture
     UnloadRenderTexture(gameTarget);
     CloseAudioDevice();
     return 0;

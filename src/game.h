@@ -85,7 +85,7 @@ private:
     const int alienCellSize = 55;
     const int alienOffsetX = 75;
     const int alienOffsetY = 100;
-    const float musicVolume = 0.22f;
+    const float musicVolume = 0.10f;
 
     float alienLaserSpeed;
     float alienShipSpeed;

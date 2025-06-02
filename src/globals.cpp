@@ -11,4 +11,4 @@ const int spaceshipSize = 44;
 const int misteryShipSize = 58;
 const int laserWidth = 4;
 const int laserHeight = 20;
-const int uiSpaceshipSize = 44;
+const int uiSpaceshipSize = 28;

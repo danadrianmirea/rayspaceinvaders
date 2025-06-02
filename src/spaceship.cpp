@@ -9,7 +9,7 @@ Spaceship::Spaceship()
     ImageResize(&img, spaceshipSize, (int)((float)img.height * ((float)spaceshipSize / (float)img.width)));
     image = LoadTextureFromImage(img);
     UnloadImage(img);
-    laserSound = LoadSound("Sounds/laser.ogg");
+    laserSound = LoadSound("Sounds/laser.mp3");
     Reset();
 }
 

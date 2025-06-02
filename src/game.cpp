@@ -191,7 +191,7 @@ void Game::HandleMobileControls()
 
 Game::Game()
 {
-    explosionSound = LoadSound("Sounds/explosion.ogg");
+    explosionSound = LoadSound("Sounds/explosion.mp3");
     music = LoadMusicStream("Sounds/music.mp3");
     PlayMusicStream(music);
     SetMusicVolume(music, musicVolume);

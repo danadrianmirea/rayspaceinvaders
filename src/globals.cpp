@@ -9,6 +9,6 @@ float uiScale = 0.7f;
 const int alienSize = 40;
 const int spaceshipSize = 44;
 const int misteryShipSize = 58;
-const int laserWidth = 4;
+const int laserWidth = 16;
 const int laserHeight = 20;
 const int uiSpaceshipSize = 28;

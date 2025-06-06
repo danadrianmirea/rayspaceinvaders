@@ -340,10 +340,20 @@ int main()
     Laser::laserTexture = LoadTextureFromImage(img);
     UnloadImage(img);
 
-    // Load alien laser texture
+    // Load alien laser textures
     img = LoadImage("Graphics/alien_red_laser.png");
     ImageResize(&img, laserWidth, laserHeight);
-    Laser::alienLaserTexture = LoadTextureFromImage(img);
+    Laser::alienRedLaserTexture = LoadTextureFromImage(img);
+    UnloadImage(img);
+
+    img = LoadImage("Graphics/alien_blue_laser.png");
+    ImageResize(&img, laserWidth, laserHeight);
+    Laser::alienBlueLaserTexture = LoadTextureFromImage(img);
+    UnloadImage(img);
+
+    img = LoadImage("Graphics/alien_purple_laser.png");
+    ImageResize(&img, laserWidth, laserHeight);
+    Laser::alienPurpleLaserTexture = LoadTextureFromImage(img);
     UnloadImage(img);
 
 #ifdef EMSCRIPTEN_BUILD
@@ -366,7 +376,9 @@ int main()
     UnloadFont(gameFont);
     UnloadTexture(spaceshipImage);
     UnloadTexture(Laser::laserTexture);
-    UnloadTexture(Laser::alienLaserTexture);
+    UnloadTexture(Laser::alienRedLaserTexture);
+    UnloadTexture(Laser::alienBlueLaserTexture);
+    UnloadTexture(Laser::alienPurpleLaserTexture);
     UnloadTexture(backgroundTexture);  // Unload background texture
     UnloadRenderTexture(gameTarget);
     CloseAudioDevice();

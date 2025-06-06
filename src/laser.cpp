@@ -2,7 +2,9 @@
 #include "laser.h"
 
 Texture2D Laser::laserTexture;
-Texture2D Laser::alienLaserTexture;
+Texture2D Laser::alienRedLaserTexture;
+Texture2D Laser::alienBlueLaserTexture;
+Texture2D Laser::alienPurpleLaserTexture;
 
 Laser::Laser(Vector2 pos, float spd, bool isPlayer)
 {
@@ -35,7 +37,7 @@ void Laser::Draw()
         }
         else
         {
-            DrawTexture(alienLaserTexture, position.x, position.y, WHITE);
+            DrawTexture(alienRedLaserTexture, position.x, position.y, WHITE);
         }
     }
 }

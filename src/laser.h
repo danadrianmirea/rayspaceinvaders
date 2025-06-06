@@ -12,7 +12,9 @@ public:
     Rectangle getRect();
     
     static Texture2D laserTexture;
-    static Texture2D alienLaserTexture;
+    static Texture2D alienRedLaserTexture;
+    static Texture2D alienBlueLaserTexture;
+    static Texture2D alienPurpleLaserTexture;
 
 private:
     Vector2 position;

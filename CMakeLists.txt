@@ -22,6 +22,7 @@ set(SOURCES
     src/misteryship.cpp
     src/obstacle.cpp
     src/block.cpp
+    src/explosion.cpp
 )
 
 # Set header files
@@ -34,6 +35,7 @@ set(HEADERS
     src/misteryship.h
     src/obstacle.h
     src/block.h
+    src/explosion.h
 )
 
 # Create executable

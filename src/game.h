@@ -5,6 +5,7 @@
 #include "obstacle.h"
 #include "alien.h"
 #include "misteryship.h"
+#include "explosion.h"
 
 class Game
 {
@@ -78,6 +79,7 @@ private:
     std::vector<Obstacle> obstacles;
     std::vector<Alien> aliens;
     std::vector<Laser> alienLasers;
+    std::vector<Explosion> explosions;  // Add explosions vector
 
     int aliensDirection;
     const int numAlienRows = 5;

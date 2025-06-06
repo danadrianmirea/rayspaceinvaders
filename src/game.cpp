@@ -217,6 +217,7 @@ void Game::InitGame()
     aliens.clear();
     alienLasers.clear();
     spaceship.lasers.clear();
+    explosions.clear();  // Clear explosions
     
     // Reset game state variables
     aliensDirection = 1;
@@ -278,6 +279,12 @@ void Game::Draw()
         alienLaser.Draw();
     }
 
+    // Draw explosions
+    for (auto &explosion : explosions)
+    {
+        explosion.Draw();
+    }
+
 #ifdef EMSCRIPTEN_BUILD
     DrawMobileControls();
 #endif
@@ -317,6 +324,19 @@ void Game::Update()
         {
             alienLaser.Update();
         }
+
+        // Update explosions
+        for (auto &explosion : explosions)
+        {
+            explosion.Update();
+        }
+
+        // Remove inactive explosions
+        explosions.erase(
+            std::remove_if(explosions.begin(), explosions.end(),
+                [](const Explosion &e) { return !e.IsActive(); }),
+            explosions.end()
+        );
 
         DeleteInactiveAlienLasers();
 
@@ -477,6 +497,10 @@ void Game::CheckForCollisions()
             if (CheckCollisionRecs(it->getRect(), laser.getRect()))
             {
                 PlaySound(explosionSound);
+                // Create explosion at alien position
+                Rectangle alienRect = it->getRect();
+                explosions.push_back(Explosion({alienRect.x + alienRect.width/2, 
+                                             alienRect.y + alienRect.height/2}));
 
                 if (it->type == 1)
                 {
@@ -532,6 +556,10 @@ void Game::CheckForCollisions()
             PlaySound(explosionSound);
             mysteryShip.alive = false;
             laser.active = false;
+            // Create explosion at mystery ship position
+            Rectangle shipRect = mysteryShip.getRect();
+            explosions.push_back(Explosion({shipRect.x + shipRect.width/2, 
+                                         shipRect.y + shipRect.height/2}));
             score += 500;
             CheckForHighScore();
         }
@@ -550,6 +578,10 @@ void Game::CheckForCollisions()
             laser.active = false;
             lives--;
             PlaySound(explosionSound);
+            // Create explosion at spaceship position
+            Rectangle shipRect = spaceship.getRect();
+            explosions.push_back(Explosion({shipRect.x + shipRect.width/2, 
+                                         shipRect.y + shipRect.height/2}));
             lostLife = true;
             lostLifeTimer = 0.0f;  // Reset debuff timer when hit
             if (lives == 0)
@@ -601,6 +633,10 @@ void Game::CheckForCollisions()
                     if (block.IsValid() && CheckCollisionRecs(block.getRect(), alien.getRect()))
                     {
                         block.Invalidate();
+                        // Create explosion at block position
+                        Rectangle blockRect = block.getRect();
+                        explosions.push_back(Explosion({blockRect.x + blockRect.width/2, 
+                                                     blockRect.y + blockRect.height/2}));
                     }
                 }
             }
@@ -608,6 +644,10 @@ void Game::CheckForCollisions()
 
         if (CheckCollisionRecs(alien.getRect(), spaceship.getRect()))
         {
+            // Create explosion at spaceship position
+            Rectangle shipRect = spaceship.getRect();
+            explosions.push_back(Explosion({shipRect.x + shipRect.width/2, 
+                                         shipRect.y + shipRect.height/2}));
             GameOver();
         }
     }

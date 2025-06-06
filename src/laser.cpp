@@ -6,12 +6,10 @@ Texture2D Laser::alienRedLaserTexture;
 Texture2D Laser::alienBlueLaserTexture;
 Texture2D Laser::alienPurpleLaserTexture;
 
-Laser::Laser(Vector2 pos, float spd, bool isPlayer)
+Laser::Laser(Vector2 pos, float spd, bool isPlayer, AlienType alienType)
+    : position(pos), speed(spd), isPlayerLaser(isPlayer), alienType(alienType)
 {
-    position = pos;
-    speed = spd;
     active = true;
-    isPlayerLaser = isPlayer;
 }
 
 void Laser::Update()
@@ -37,7 +35,18 @@ void Laser::Draw()
         }
         else
         {
-            DrawTexture(alienRedLaserTexture, position.x, position.y, WHITE);
+            switch (alienType)
+            {
+                case AlienType::ALIEN_1:
+                    DrawTexture(alienRedLaserTexture, position.x, position.y, WHITE);
+                    break;
+                case AlienType::ALIEN_2:
+                    DrawTexture(alienBlueLaserTexture, position.x, position.y, WHITE);
+                    break;
+                case AlienType::ALIEN_3:
+                    DrawTexture(alienPurpleLaserTexture, position.x, position.y, WHITE);
+                    break;
+            }
         }
     }
 }

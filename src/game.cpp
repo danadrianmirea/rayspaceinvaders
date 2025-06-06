@@ -432,7 +432,23 @@ void Game::AlienShootLaser()
         {
             int randomIndex = GetRandomValue(0, aliens.size() - 1);
             Alien &alien = aliens[randomIndex];
-            alienLasers.push_back(Laser({alien.position.x + alien.alienImages[alien.type - 1].width / 2, alien.position.y + alien.alienImages[alien.type - 1].height}, alienLaserSpeed, false));
+            Laser::AlienType alienType;
+            switch (alien.type)
+            {
+                case 1:
+                    alienType = Laser::AlienType::ALIEN_1;
+                    break;
+                case 2:
+                    alienType = Laser::AlienType::ALIEN_2;
+                    break;
+                case 3:
+                    alienType = Laser::AlienType::ALIEN_3;
+                    break;
+                default:
+                    alienType = Laser::AlienType::ALIEN_1;
+                    break;
+            }
+            alienLasers.push_back(Laser({alien.position.x + alien.alienImages[alien.type - 1].width / 2, alien.position.y + alien.alienImages[alien.type - 1].height}, alienLaserSpeed, false, alienType));
             aliensReadyToFire = false;
             alienFireTimer = 0.0f;
         }

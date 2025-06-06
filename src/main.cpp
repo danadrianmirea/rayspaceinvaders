@@ -341,7 +341,7 @@ int main()
     UnloadImage(img);
 
     // Load alien laser texture
-    img = LoadImage("Graphics/alien_laser.png");
+    img = LoadImage("Graphics/alien_red_laser.png");
     ImageResize(&img, laserWidth, laserHeight);
     Laser::alienLaserTexture = LoadTextureFromImage(img);
     UnloadImage(img);

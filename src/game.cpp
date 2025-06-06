@@ -578,10 +578,6 @@ void Game::CheckForCollisions()
             laser.active = false;
             lives--;
             PlaySound(explosionSound);
-            // Create explosion at spaceship position
-            Rectangle shipRect = spaceship.getRect();
-            explosions.push_back(Explosion({shipRect.x + shipRect.width/2, 
-                                         shipRect.y + shipRect.height/2}));
             lostLife = true;
             lostLifeTimer = 0.0f;  // Reset debuff timer when hit
             if (lives == 0)

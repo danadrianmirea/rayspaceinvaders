@@ -261,7 +261,13 @@ void Game::InitGame()
 
 void Game::Draw()
 {
-    spaceship.Draw();
+    // Only draw spaceship if we're not in life loss or game over state, or if there are still active explosions
+    bool shouldDrawSpaceship = !(lostLife || gameOver) || !explosions.empty();
+    if (shouldDrawSpaceship)
+    {
+        spaceship.Draw();
+    }
+    
     mysteryShip.Draw();
 
     for (auto &obs : obstacles)
@@ -347,38 +353,54 @@ void Game::Update()
             AdvanceLevel();
         }
     }
-    else if (lostLife && !gameOver)
+    else if (lostLife || gameOver)
     {
-        // Update debuff timer
-        lostLifeTimer += GetFrameTime();
-        
-        // Only allow continuing after inputDelayTime
-#ifdef EMSCRIPTEN_BUILD
-        if (lostLifeTimer >= inputDelayTime && (GetKeyPressed() != KEY_NULL || (isMobile && IsGestureDetected(GESTURE_TAP))))
-#else
-        if (lostLifeTimer >= inputDelayTime && GetKeyPressed() != KEY_NULL)
-#endif
+        // Update only explosions during life loss or game over
+        for (auto &explosion : explosions)
         {
-            lostLife = false;
-            lostLifeTimer = 0.0f;  // Reset timer
-            spaceship.Reset();  // Reset player position
-            spaceship.lasers.clear();  // Clear player lasers
-            alienLasers.clear();  // Clear alien lasers
+            explosion.Update();
         }
-    }
-    else if (gameOver)
-    {
-        // Update game over delay timer
-        gameOverTimer += GetFrameTime();
-        // Only allow restarting after inputDelayTime
-#ifdef EMSCRIPTEN_BUILD
-        if (gameOverTimer >= inputDelayTime && (GetKeyPressed() != KEY_NULL || (isMobile && IsGestureDetected(GESTURE_TAP))))
-#else
-        if (gameOverTimer >= inputDelayTime && GetKeyPressed() != KEY_NULL)
-#endif
+
+        // Remove inactive explosions
+        explosions.erase(
+            std::remove_if(explosions.begin(), explosions.end(),
+                [](const Explosion &e) { return !e.IsActive(); }),
+            explosions.end()
+        );
+
+        if (lostLife && !gameOver)
         {
-            InitGame();
-            startupDelayTimer = 0.1f;
+            // Update debuff timer
+            lostLifeTimer += GetFrameTime();
+            
+            // Only allow continuing after inputDelayTime
+#ifdef EMSCRIPTEN_BUILD
+            if (lostLifeTimer >= inputDelayTime && (GetKeyPressed() != KEY_NULL || (isMobile && IsGestureDetected(GESTURE_TAP))))
+#else
+            if (lostLifeTimer >= inputDelayTime && GetKeyPressed() != KEY_NULL)
+#endif
+            {
+                lostLife = false;
+                lostLifeTimer = 0.0f;  // Reset timer
+                spaceship.Reset();  // Reset player position
+                spaceship.lasers.clear();  // Clear player lasers
+                alienLasers.clear();  // Clear alien lasers
+            }
+        }
+        else if (gameOver)
+        {
+            // Update game over delay timer
+            gameOverTimer += GetFrameTime();
+            // Only allow restarting after inputDelayTime
+#ifdef EMSCRIPTEN_BUILD
+            if (gameOverTimer >= inputDelayTime && (GetKeyPressed() != KEY_NULL || (isMobile && IsGestureDetected(GESTURE_TAP))))
+#else
+            if (gameOverTimer >= inputDelayTime && GetKeyPressed() != KEY_NULL)
+#endif
+            {
+                InitGame();
+                startupDelayTimer = 0.1f;
+            }
         }
     }
 }
@@ -578,6 +600,10 @@ void Game::CheckForCollisions()
             laser.active = false;
             lives--;
             PlaySound(explosionSound);
+            // Create explosion at spaceship position
+            Rectangle shipRect = spaceship.getRect();
+            explosions.push_back(Explosion({shipRect.x + shipRect.width/2, 
+                                         shipRect.y + shipRect.height/2}));
             lostLife = true;
             lostLifeTimer = 0.0f;  // Reset debuff timer when hit
             if (lives == 0)

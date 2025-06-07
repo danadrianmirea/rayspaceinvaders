@@ -16,6 +16,7 @@ public:
     void Draw();
     bool active;
     Rectangle getRect();
+    Vector2 getPosition() const { return position; }
     
     static Texture2D laserTexture;
     static Texture2D alienRedLaserTexture;

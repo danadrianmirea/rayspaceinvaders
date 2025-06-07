@@ -2,7 +2,7 @@
 
 Texture2D Explosion::explosionTexture;
 
-Explosion::Explosion(Vector2 pos) : position(pos), active(true), frameTimer(0.0f), currentFrame(0) {
+Explosion::Explosion(Vector2 pos, float scale) : position(pos), active(true), frameTimer(0.0f), currentFrame(0), scale(scale) {
     if (explosionTexture.id == 0) {
         explosionTexture = LoadTexture("Graphics/explosion.png");
     }
@@ -32,12 +32,12 @@ void Explosion::Draw() {
         (float)FRAME_SIZE,
         (float)FRAME_SIZE
     };
-    float halfSize = FRAME_SIZE / 2.0f;  // Half the original size
+    float scaledSize = FRAME_SIZE * scale;  // Use the scale parameter
     Rectangle destRec = {
-        position.x - halfSize/2,  // Center the smaller explosion
-        position.y - halfSize/2,
-        halfSize,  // Use half size
-        halfSize   // Use half size
+        position.x - scaledSize/2,  // Center the explosion
+        position.y - scaledSize/2,
+        scaledSize,
+        scaledSize
     };
     DrawTexturePro(explosionTexture, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
 } 

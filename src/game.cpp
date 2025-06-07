@@ -556,10 +556,10 @@ void Game::CheckForCollisions()
             PlaySound(explosionSound);
             mysteryShip.alive = false;
             laser.active = false;
-            // Create explosion at mystery ship position
+            // Create explosion at mystery ship position with 50% larger size
             Rectangle shipRect = mysteryShip.getRect();
             explosions.push_back(Explosion({shipRect.x + shipRect.width/2, 
-                                         shipRect.y + shipRect.height/2}));
+                                         shipRect.y + shipRect.height/2}, 0.75f));
             score += 500;
             CheckForHighScore();
         }
@@ -629,10 +629,6 @@ void Game::CheckForCollisions()
                     if (block.IsValid() && CheckCollisionRecs(block.getRect(), alien.getRect()))
                     {
                         block.Invalidate();
-                        // Create explosion at block position
-                        Rectangle blockRect = block.getRect();
-                        explosions.push_back(Explosion({blockRect.x + blockRect.width/2, 
-                                                     blockRect.y + blockRect.height/2}));
                     }
                 }
             }

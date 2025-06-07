@@ -7,7 +7,9 @@ emcc src/*.cpp -o web-build/index.html \
   -DEMSCRIPTEN_BUILD \
   -s USE_GLFW=3 \
   -s ASYNCIFY \
-  -s TOTAL_MEMORY=16777216 \
+  -s TOTAL_MEMORY=33554432 \
+  -s INITIAL_MEMORY=33554432 \
+  -s STACK_SIZE=524288 \
   -s FORCE_FILESYSTEM=1 \
   -s EXPORTED_FUNCTIONS="['_main']" \
   -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" \

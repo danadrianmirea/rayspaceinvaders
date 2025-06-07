@@ -54,7 +54,7 @@ void Game::DrawMobileControls()
     
     // Draw fire button (red circle)
     DrawCircleV(fireButtonPos, fireButtonRadius, 
-                fireButtonPressed ? RED : YELLOW);
+                fireButtonPressed ? RED : GREEN);
     DrawCircleLines(fireButtonPos.x, fireButtonPos.y, fireButtonRadius, BLACK);
     
     // Draw laser indicator inside fire button
@@ -69,7 +69,7 @@ void Game::DrawMobileControls()
     DrawRectangleRec(laserRect, BLACK);
     
     // Draw movement buttons (rectangles)
-    DrawRectangleRec(leftButtonRect, leftButtonPressed ? RED : YELLOW);
+    DrawRectangleRec(leftButtonRect, leftButtonPressed ? RED : GREEN);
     DrawRectangleLinesEx(leftButtonRect, 2, BLACK);
     
     // Draw left arrow triangle (pointing left)
@@ -80,7 +80,7 @@ void Game::DrawMobileControls()
         BLACK
     );
     
-    DrawRectangleRec(rightButtonRect, rightButtonPressed ? RED : YELLOW);
+    DrawRectangleRec(rightButtonRect, rightButtonPressed ? RED : GREEN);
     DrawRectangleLinesEx(rightButtonRect, 2, BLACK);
     
     // Draw right arrow triangle (pointing right)

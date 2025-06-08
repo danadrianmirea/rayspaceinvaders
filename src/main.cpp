@@ -24,9 +24,6 @@ std::string FormatWithLeadingZeroes(int number, int width)
     return numberText;
 }
 
-int windowWidth = 1920;
-int windowHeight = 1080;
-
 Color grey = Color{ 29, 29, 27, 255 };
 int offset = 50;
 
@@ -312,8 +309,6 @@ int main()
 #ifdef EMSCRIPTEN_BUILD
     fullscreen = false;
 #else
-    SetWindowSize(windowWidth - borderW, windowHeight - borderH);
-    SetWindowPosition(50, 50);
     if(fullscreen) 
     {
         ToggleBorderlessWindowed();

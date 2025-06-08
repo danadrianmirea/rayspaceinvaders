@@ -10,6 +10,7 @@ public:
     void Update();
     void Draw();
     void Spawn();
+    void Destroy();
     Rectangle getRect();
     bool alive;
 private:

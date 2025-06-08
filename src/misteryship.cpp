@@ -64,3 +64,9 @@ void MysteryShip::Draw()
         DrawTextureEx(image, position, 0.0f, 1.0f, WHITE);
     }
 }
+
+void MysteryShip::Destroy()
+{
+    alive = false;
+    position.x = -1000;  // Move it far off screen
+}

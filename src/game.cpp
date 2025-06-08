@@ -576,12 +576,12 @@ void Game::CheckForCollisions()
         if (CheckCollisionRecs(mysteryShip.getRect(), laser.getRect()))
         {
             PlaySound(explosionSound);
-            mysteryShip.alive = false;
-            laser.active = false;
-            // Create explosion at mystery ship position with 50% larger size
+            // Get the position and create explosion before destroying the ship
             Rectangle shipRect = mysteryShip.getRect();
             explosions.push_back(Explosion({shipRect.x + shipRect.width/2, 
                                          shipRect.y + shipRect.height/2}, 0.75f));
+            mysteryShip.Destroy();
+            laser.active = false;
             score += 500;
             CheckForHighScore();
         }

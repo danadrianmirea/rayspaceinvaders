@@ -62,7 +62,7 @@ void Spaceship::MoveLeft()
     {
         currentSpeed *= speedBoostMultiplier;
     }
-    position.x -= currentSpeed;
+    position.x -= currentSpeed * GetFrameTime() * targetFps;
     if (position.x < frameOffsetLeft)
     {
         position.x = frameOffsetLeft;
@@ -76,7 +76,7 @@ void Spaceship::MoveRight()
     {
         currentSpeed *= speedBoostMultiplier;
     }
-    position.x += currentSpeed;
+    position.x += currentSpeed * GetFrameTime() * targetFps;
     if (position.x > gameScreenWidth - image.width - frameOffsetRight)
     {
         position.x = gameScreenWidth - image.width - frameOffsetRight;

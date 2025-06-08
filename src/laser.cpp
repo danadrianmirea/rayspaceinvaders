@@ -14,7 +14,7 @@ Laser::Laser(Vector2 pos, float spd, bool isPlayer, AlienType alienType)
 
 void Laser::Update()
 {
-    position.y -= speed;
+    position.y -= speed * GetFrameTime() * targetFps;  // Scale with delta time and normalize to target FPS
 
     if(active)
     {

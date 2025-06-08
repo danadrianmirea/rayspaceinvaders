@@ -326,7 +326,7 @@ int main()
     gameScreenHeight = gameScreenHeight + 2 * offset;
     gameTarget = LoadRenderTexture(gameScreenWidth, gameScreenHeight);
     SetTextureFilter(gameTarget.texture, TEXTURE_FILTER_BILINEAR); // Texture scale filter to use
-    SetTargetFPS(144);
+    SetTargetFPS(targetFps);
 
     gameInstance = new Game();
     Image img = LoadImage("Graphics/spaceship.png");

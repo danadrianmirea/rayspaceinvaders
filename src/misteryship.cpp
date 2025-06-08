@@ -47,10 +47,9 @@ Rectangle MysteryShip::getRect()
 
 void MysteryShip::Update()
 {
-    
     if(alive)
     {
-        position.x += speed;
+        position.x += speed * GetFrameTime() * targetFps;  // Scale with delta time and normalize to target FPS
         if(position.x > gameScreenWidth - image.width - frameOffsetRight || position.x < frameOffsetLeft)
         {
             alive = false;

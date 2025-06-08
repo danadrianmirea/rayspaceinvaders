@@ -12,3 +12,4 @@ const int misteryShipSize = 116;
 const int laserWidth = 12;
 const int laserHeight = 38;
 const int uiSpaceshipSize = 28;
+const int targetFps = 144;  // Define target FPS constant

@@ -771,7 +771,7 @@ void Game::MoveAliens(float speed)
                 aliensDirection = 1;
                 MoveDownAliens(4);
             }
-            alien.Update(speed, aliensDirection);
+            alien.Update(speed * GetFrameTime() * targetFps, aliensDirection);  // Scale with delta time and normalize to target FPS
         }
         alienUpdateTimerExpired = false;
     }

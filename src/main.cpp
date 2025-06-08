@@ -309,10 +309,7 @@ int main()
 #ifdef EMSCRIPTEN_BUILD
     fullscreen = false;
 #else
-    if(fullscreen) 
-    {
-        ToggleBorderlessWindowed();
-    }
+    ToggleBorderlessWindowed();
     // Calculate scale for desktop build
     gameScale = MIN((float)GetScreenWidth() / gameScreenWidth, (float)GetScreenHeight() / gameScreenHeight);
 #endif
